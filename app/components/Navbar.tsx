@@ -31,7 +31,7 @@ export function Navbar() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "1.1rem 3.5rem",
+        padding: "1.1rem 1.5rem",
         background: scrolled ? "rgba(14,12,20,0.94)" : "transparent",
         backdropFilter: scrolled ? "blur(20px)" : "none",
         borderBottom: scrolled
