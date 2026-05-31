@@ -245,7 +245,7 @@ export function Hero() {
       </div> */}
 
       {/* Scroll hint */}
-      <div
+      {/* <div
         style={{
           position: "absolute",
           bottom: "2.25rem",
@@ -270,7 +270,7 @@ export function Hero() {
             background: "linear-gradient(to bottom, #1D9E75, transparent)",
           }}
         />
-      </div>
+      </div> */}
     </header>
   );
 }
