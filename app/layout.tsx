@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./webstudio.css";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Evolure Web Studio — Sites que vendem. Código que dura.",
@@ -30,9 +31,10 @@ export default function WebStudioLayout({
         `}
         </script>
         <noscript>
-          <img
+          <Image
             height="1"
             width="1"
+            alt="pixel"
             style={{ display: "none" }}
             src="https://www.facebook.com/tr?id=1677909396804331&ev=PageView&noscript=1"
           />
