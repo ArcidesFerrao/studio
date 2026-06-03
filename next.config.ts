@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
 
     remotePatterns: [
       { protocol: "https", hostname: "webstudio.evolurelabs.com", port: '' },
+      { protocol: "https", hostname: "www.facebook.com", port: '' },
     ]
   }
 };
