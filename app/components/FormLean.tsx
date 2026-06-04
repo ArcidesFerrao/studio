@@ -115,7 +115,7 @@ const QUESTIONS: Question[] = [
 
 const SCORE_MAP = [3, 2, 1, 0];
 
-const WA_NUMBER = "258852740554"; // ← substitui pelo teu número real
+const WA_NUMBER = "258852740554";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function buildResult(
