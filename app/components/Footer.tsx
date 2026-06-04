@@ -19,7 +19,7 @@ export function Footer() {
       <div style={{ color: "rgba(238,234,255,0.22)", fontSize: ".78rem" }}>
         © {year}{" "}
         <a
-          href="https://www.evolure.com"
+          href="https://www.evolurelabs.com"
           target="_blank"
           rel="noopener noreferrer"
           style={{
