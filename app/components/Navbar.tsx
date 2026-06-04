@@ -41,7 +41,7 @@ export function Navbar() {
       }}
     >
       <Link
-        href="/webstudio"
+        href="/"
         style={{
           display: "flex",
           alignItems: "center",

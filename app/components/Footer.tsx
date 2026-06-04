@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
 export function Footer() {
   const year = new Date().getFullYear();
   return (
@@ -18,27 +16,26 @@ export function Footer() {
         zIndex: 1,
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          fontFamily: "var(--font-display,'Syne',sans-serif)",
-          fontWeight: 800,
-          fontSize: "1.1rem",
-          color: "#eeeaff",
-        }}
-      >
-        <Image
-          alt="icon"
-          src="/favicon-w.png"
-          width={24}
-          height={24}
-          style={{ marginRight: ".3rem" }}
-        />
-        WebStudio
-      </div>
       <div style={{ color: "rgba(238,234,255,0.22)", fontSize: ".78rem" }}>
-        © {year} Evolure Web Studio · Maputo, Moçambique
+        © {year}{" "}
+        <a
+          href="https://www.evolure.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: "rgba(238,234,255,0.32)",
+            fontSize: ".82rem",
+            textDecoration: "none",
+            transition: "color .2s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#eeeaff")}
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.color = "rgba(238,234,255,0.32)")
+          }
+        >
+          Evolure Labs
+        </a>{" "}
+        · Maputo, Moçambique
       </div>
       <div style={{ display: "flex", gap: "1.75rem" }}>
         {[
