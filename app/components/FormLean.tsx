@@ -340,7 +340,8 @@ function WaBadge({ label }: { label: string }) {
         background: "rgba(29,158,117,0.1)",
         border: "1px solid var(--ws-green-border)",
         color: "var(--ws-green-hi)",
-        fontSize: "0.7rem",
+        // fontSize: "0.7rem",
+        fontSize: "clamp(.58rem, 2.5vw, .7rem)",
         fontWeight: 600,
         letterSpacing: "1.5px",
         textTransform: "uppercase" as const,
@@ -403,8 +404,8 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
               lineHeight: 1.65,
             }}
           >
-            8 perguntas. 2 minutos. Resultado personalizado com recomendações
-            para o teu negócio em Maputo.
+            Resultado personalizado com recomendações para o teu negócio em
+            Maputo.
           </p>
         </div>
         <div
@@ -435,7 +436,9 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
                   background: "var(--ws-card)",
                   border: "1px solid var(--ws-border)",
                   borderRadius: 14,
-                  padding: "14px 10px",
+                  // padding: "14px 10px",
+                  padding:
+                    "clamp(.6rem, 2.5vw, 1.1rem) clamp(.4rem, 2vw, .75rem)",
                   textAlign: "center",
                 }}
               >
@@ -443,7 +446,7 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
                   style={{
                     display: "block",
                     fontFamily: "'Syne', sans-serif",
-                    fontSize: "1.4rem",
+                    fontSize: "clamp(.9rem, 2.5vw, 1.4rem)",
                     fontWeight: 800,
                     color: "var(--ws-green-hi)",
                   }}

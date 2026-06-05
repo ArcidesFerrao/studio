@@ -90,13 +90,16 @@ export function Hero() {
             background: "rgba(29,158,117,0.08)",
             border: "1px solid rgba(29,158,117,0.3)",
             color: "#1D9E75",
-            fontSize: ".72rem",
+            // fontSize: ".72rem",
             fontWeight: 700,
             letterSpacing: ".14em",
             textTransform: "uppercase",
-            padding: ".32rem .9rem",
+            // padding: ".32rem .9rem",
             borderRadius: 100,
-            marginBottom: "2.25rem",
+            // marginBottom: "2.25rem",
+            fontSize: "clamp(.58rem, 2.5vw, .72rem)",
+            padding: "clamp(.24rem, 1vw, .32rem) clamp(.6rem, 2vw, .9rem)",
+            marginBottom: "clamp(1.25rem, 4vw, 2.25rem)",
           }}
         >
           <span
@@ -117,7 +120,7 @@ export function Hero() {
           className="ws-fi-1"
           style={{
             fontFamily: "var(--font-display,'Syne',sans-serif)",
-            fontSize: "clamp(3rem,7vw,5.8rem)",
+            fontSize: "clamp(2rem,7vw,5.8rem)",
             fontWeight: 800,
             lineHeight: 1.0,
             letterSpacing: "-.035em",
@@ -139,7 +142,7 @@ export function Hero() {
           style={{
             marginTop: "1.85rem",
             color: "rgba(238,234,255,0.48)",
-            fontSize: "1.05rem",
+            fontSize: "clamp(.9rem, 2.5vw, 1.25rem)",
             fontWeight: 300,
             lineHeight: 1.82,
             maxWidth: 520,
@@ -173,7 +176,8 @@ export function Hero() {
         <div
           className="ws-fi-4"
           style={{
-            marginTop: "3.75rem",
+            // marginTop: "3.75rem",
+            marginTop: "clamp(2rem, 5vw, 3.75rem)",
             display: "flex",
             justifyContent: "center",
             gap: "1px",
@@ -182,7 +186,7 @@ export function Hero() {
             overflow: "hidden",
             border: "1px solid rgba(255,255,255,0.07)",
             maxWidth: 520,
-            margin: "3.75rem auto 0",
+            margin: "clamp(2rem, 5vw, 3.75rem) auto 0",
           }}
         >
           {[
@@ -194,7 +198,9 @@ export function Hero() {
               key={i}
               style={{
                 flex: 1,
-                padding: "1.1rem .75rem",
+                // padding: "1.1rem .75rem",
+                padding:
+                  "clamp(.6rem, 2.5vw, 1.1rem) clamp(.4rem, 2vw, .75rem)",
                 background: "rgba(22,20,30,0.8)",
                 textAlign: "center",
               }}
@@ -203,7 +209,7 @@ export function Hero() {
                 style={{
                   fontFamily: "var(--font-display,'Syne',sans-serif)",
                   fontWeight: 800,
-                  fontSize: "1.3rem",
+                  fontSize: "clamp(.9rem, 2.5vw, 1.3rem)",
                   color: "#1D9E75",
                   lineHeight: 1,
                 }}
@@ -213,7 +219,7 @@ export function Hero() {
               <div
                 style={{
                   color: "rgba(238,234,255,0.3)",
-                  fontSize: ".68rem",
+                  fontSize: "clamp(.55rem, 2vw, .68rem)",
                   marginTop: ".28rem",
                   letterSpacing: ".08em",
                   textTransform: "uppercase",

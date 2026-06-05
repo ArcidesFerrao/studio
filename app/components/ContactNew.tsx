@@ -108,7 +108,9 @@ export function ContactNew() {
             background: "rgba(22,20,30,0.9)",
             border: "1px solid rgba(29,158,117,0.3)",
             borderRadius: 16,
-            padding: "3.5rem",
+            // padding: "3.5rem",
+            padding: "clamp(1.5rem, 5vw, 3.5rem)",
+
             marginBottom: "3.5rem",
             textAlign: "center",
             position: "relative",
@@ -358,7 +360,8 @@ export function ContactNew() {
               background: "rgba(22,20,30,0.9)",
               border: "1px solid rgba(255,255,255,0.07)",
               borderRadius: 16,
-              padding: "2.25rem",
+              // padding: "2.25rem",
+              padding: "clamp(1.5rem, 5vw, 2.5rem)",
             }}
           >
             {status === "success" ? (
