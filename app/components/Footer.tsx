@@ -4,14 +4,15 @@ export function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer
+      className="flex justify-center md:justify-between items-center"
       style={{
         borderTop: "1px solid rgba(255,255,255,0.07)",
         // padding: "2.75rem 3.5rem",
         padding: "clamp(1.5rem, 5vw, 2.75rem) clamp(1.75rem, 5vw, 3.5rem)",
 
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
+        // display: "flex",
+        // alignItems: "center",
+        // justifyContent: "space-between",
         flexWrap: "wrap",
         gap: "1rem",
         position: "relative",
