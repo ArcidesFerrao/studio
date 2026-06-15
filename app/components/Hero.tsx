@@ -149,9 +149,24 @@ export function Hero() {
             margin: "1.85rem auto 0",
           }}
         >
+          Criamos websites profissionais que ajudam empresas moçambicanas a
+          ganhar credibilidade e receber mais contactos.
+        </p>
+        {/* <p
+          className="ws-fi-2"
+          style={{
+            marginTop: "1.85rem",
+            color: "rgba(238,234,255,0.48)",
+            fontSize: "clamp(.9rem, 2.5vw, 1.25rem)",
+            fontWeight: 300,
+            lineHeight: 1.82,
+            maxWidth: 520,
+            margin: "1.85rem auto 0",
+          }}
+        >
           Arcides Ferrão — desenvolvedor full‑stack de Maputo. Construo presença
           digital séria para marcas que querem crescer de verdade.
-        </p>
+        </p> */}
 
         {/* CTAs */}
         <div

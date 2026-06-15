@@ -131,7 +131,7 @@ export function ContactNew() {
             className="ws-section-title"
             style={{ maxWidth: 560, margin: "0 auto .75rem" }}
           >
-            Vamos construir algo que os seus clientes não esquecem.
+            Vamos criar a presença online que o teu negócio merece.
           </h2>
           <p
             style={{
@@ -232,7 +232,7 @@ export function ContactNew() {
                 marginBottom: "1rem",
               }}
             >
-              Fale comigo
+              Fale connosco
             </h3>
             <p
               style={{
@@ -243,8 +243,8 @@ export function ContactNew() {
                 marginBottom: "2rem",
               }}
             >
-              Atendo projectos de qualquer tamanho. Seja uma landing page
-              simples ou um sistema complexo, respondo sempre.
+              Atendemos projectos de qualquer tamanho. Seja uma landing page
+              simples ou um sistema complexo.
             </p>
 
             <div
