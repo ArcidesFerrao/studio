@@ -69,8 +69,88 @@ const PROJECTS = [
   },
 ];
 
+// export function Projects() {
+//   const ref = useReveal();
+
+//   return (
+//     <section
+//       id="projects"
+//       className="ws-mob-pad"
+//       style={{ padding: "7rem 3.5rem", position: "relative", zIndex: 1 }}
+//     >
+//       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+//         <div
+//           ref={ref}
+//           className="ws-reveal"
+//           style={{
+//             display: "flex",
+//             justifyContent: "space-between",
+//             alignItems: "flex-end",
+//             flexWrap: "wrap",
+//             gap: "1rem",
+//             marginBottom: "3.5rem",
+//           }}
+//         >
+//           <div>
+//             <span className="ws-label">Projetos</span>
+//             <h2 className="ws-section-title">
+//               Trabalho real,
+//               <br />
+//               resultados reais.
+//             </h2>
+//           </div>
+//           <a
+//             href="https://github.com/ArcidesFerrao"
+//             target="_blank"
+//             rel="noopener noreferrer"
+//             style={{
+//               color: "rgba(238,234,255,0.4)",
+//               fontSize: ".84rem",
+//               textDecoration: "none",
+//               display: "inline-flex",
+//               alignItems: "center",
+//               gap: ".4rem",
+//               transition: "color .2s",
+//               whiteSpace: "nowrap",
+//             }}
+//             onMouseEnter={(e) => (e.currentTarget.style.color = "#eeeaff")}
+//             onMouseLeave={(e) =>
+//               (e.currentTarget.style.color = "rgba(238,234,255,0.4)")
+//             }
+//           >
+//             Ver no GitHub
+//             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+//               <path
+//                 d="M3 8h10M9 4l4 4-4 4"
+//                 stroke="currentColor"
+//                 strokeWidth="1.5"
+//                 strokeLinecap="round"
+//                 strokeLinejoin="round"
+//               />
+//             </svg>
+//           </a>
+//         </div>
+
+//         <div
+//           className="ws-mob-col1"
+//           style={{
+//             display: "grid",
+//             gridTemplateColumns: "repeat(3,1fr)",
+//             gap: "1.25rem",
+//           }}
+//         >
+//           {PROJECTS.map((p, i) => (
+//             <ProjectCard key={i} p={p} delay={i * 100} />
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
 export function Projects() {
   const ref = useReveal();
+  const [visible, setVisible] = useState(3);
 
   return (
     <section
@@ -130,7 +210,6 @@ export function Projects() {
             </svg>
           </a>
         </div>
-
         <div
           className="ws-mob-col1"
           style={{
@@ -139,10 +218,50 @@ export function Projects() {
             gap: "1.25rem",
           }}
         >
-          {PROJECTS.map((p, i) => (
+          {PROJECTS.slice(0, visible).map((p, i) => (
             <ProjectCard key={i} p={p} delay={i * 100} />
           ))}
         </div>
+
+        {visible < PROJECTS.length && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "2rem",
+            }}
+          >
+            <button
+              onClick={() =>
+                setVisible((v) => Math.min(v + 3, PROJECTS.length))
+              }
+              style={{
+                background: "transparent",
+                border: "1px solid rgba(255,255,255,0.12)",
+                color: "rgba(238,234,255,0.7)",
+                padding: ".65rem 2rem",
+                borderRadius: 100,
+                fontSize: ".85rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                letterSpacing: ".04em",
+                transition: "border-color .2s, color .2s",
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLButtonElement).style.borderColor = "#1D9E75";
+                (e.target as HTMLButtonElement).style.color = "#1D9E75";
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLButtonElement).style.borderColor =
+                  "rgba(255,255,255,0.12)";
+                (e.target as HTMLButtonElement).style.color =
+                  "rgba(238,234,255,0.7)";
+              }}
+            >
+              Ver mais projetos
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

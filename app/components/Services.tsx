@@ -7,8 +7,9 @@ const SERVICES = [
     num: "01",
     title: "Landing Pages",
     tagline: "Alta conversão. Primeiro impacto.",
-    desc: "Páginas únicas com copy persuasivo, animações subtis e velocidade optimizada. Construídas para converter visitas em contactos.",
-    price: "A partir de 10 000 MZN",
+    desc: "Uma página profissional, entregue em 5–7 dias. Para negócios que precisam de presença agora.",
+    // desc: "Páginas únicas com copy persuasivo, animações subtis e velocidade optimizada. Construídas para converter visitas em contactos.",
+    price: "A partir de 5 555 MZN",
     accent: "#1D9E75",
     glow: "rgba(29,158,117,0.08)",
     tags: ["Next.js", "SEO", "Animações", "Responsivo"],
@@ -17,8 +18,9 @@ const SERVICES = [
     num: "02",
     title: "Sites Completos",
     tagline: "Presença digital séria.",
-    desc: "Sites multi-página com CMS, blog, formulário de contacto e SEO técnico. A sua marca representada com autoridade.",
-    price: "A partir de 15 000 MZN",
+    // desc: "Sites multi-página com CMS, blog, formulário de contacto e SEO técnico. A sua marca representada com autoridade.",
+    desc: "Multi-página, formulário de contacto, integração WhatsApp e SEO básico. Para empresas estabelecidas.",
+    price: "A partir de 11 999 MZN",
     accent: "#4a8fd4",
     glow: "rgba(74,143,212,0.08)",
     tags: ["Multi-página", "CMS", "Blog", "Analytics"],
@@ -28,7 +30,7 @@ const SERVICES = [
     title: "E-Commerce",
     tagline: "Venda online, 24h por dia.",
     desc: "Lojas completas com catálogo, carrinho, pagamentos e painel de admin. Construídas para escalar e gerar receita real.",
-    price: "A partir de 20 000 MZN",
+    price: "Orçamento personalizado",
     accent: "#e89c35",
     glow: "rgba(232,156,53,0.08)",
     tags: ["Loja Online", "Pagamentos", "Admin", "Stock"],
@@ -45,8 +47,54 @@ const SERVICES = [
   },
 ];
 
+// export function Services() {
+//   const ref = useReveal();
+//   const [viewMore, setViewMore] = useState(false);
+
+//   return (
+//     <section
+//       id="services"
+//       className="ws-mob-pad"
+//       style={{ padding: "7rem 3.5rem", position: "relative", zIndex: 1 }}
+//     >
+//       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+//         <div ref={ref} className="ws-reveal" style={{ marginBottom: "3.5rem" }}>
+//           <span className="ws-label">O que ofereço</span>
+//           <h2 className="ws-section-title" style={{ maxWidth: 560 }}>
+//             Soluções digitais para o seu negócio crescer
+//           </h2>
+//           <p className="ws-section-sub">
+//             Cada projecto é construído de raiz para o contexto específico do
+//             cliente.
+//           </p>
+//         </div>
+
+//         <div
+//           className="ws-mob-col1"
+//           style={{
+//             display: "grid",
+//             gridTemplateColumns: "1fr 1fr",
+//             gap: "1px",
+//             background: "rgba(255,255,255,0.06)",
+//             borderRadius: 16,
+//             overflow: "hidden",
+//             border: "1px solid rgba(255,255,255,0.06)",
+//           }}
+//         >
+//           {SERVICES.map((s, i) => (
+//             <Card key={i} s={s} delay={(i % 2) * 100} />
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
 export function Services() {
   const ref = useReveal();
+  const [showAll, setShowAll] = useState(false);
+
+  const visibleServices = showAll ? SERVICES : SERVICES.slice(0, 2);
 
   return (
     <section
@@ -78,10 +126,48 @@ export function Services() {
             border: "1px solid rgba(255,255,255,0.06)",
           }}
         >
-          {SERVICES.map((s, i) => (
+          {visibleServices.map((s, i) => (
             <Card key={i} s={s} delay={(i % 2) * 100} />
           ))}
         </div>
+
+        {!showAll && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "2rem",
+            }}
+          >
+            <button
+              onClick={() => setShowAll(true)}
+              style={{
+                background: "transparent",
+                border: "1px solid rgba(255,255,255,0.12)",
+                color: "rgba(238,234,255,0.7)",
+                padding: ".65rem 2rem",
+                borderRadius: 100,
+                fontSize: ".85rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                letterSpacing: ".04em",
+                transition: "border-color .2s, color .2s",
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLButtonElement).style.borderColor = "#1D9E75";
+                (e.target as HTMLButtonElement).style.color = "#1D9E75";
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLButtonElement).style.borderColor =
+                  "rgba(255,255,255,0.12)";
+                (e.target as HTMLButtonElement).style.color =
+                  "rgba(238,234,255,0.7)";
+              }}
+            >
+              Ver mais serviços
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
