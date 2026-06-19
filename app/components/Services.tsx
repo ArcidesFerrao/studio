@@ -228,18 +228,24 @@ function Card({ s, delay }: { s: (typeof SERVICES)[0]; delay: number }) {
       >
         {s.price}
       </div>
-
-      <h3
-        style={{
-          fontFamily: "var(--font-display,'Syne',sans-serif)",
-          fontSize: "1.28rem",
-          fontWeight: 800,
-          marginBottom: ".28rem",
-          letterSpacing: "-.01em",
-        }}
+      <a
+        href={s.wpp}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ textDecoration: "none" }}
       >
-        {s.title}
-      </h3>
+        <h3
+          style={{
+            fontFamily: "var(--font-display,'Syne',sans-serif)",
+            fontSize: "1.28rem",
+            fontWeight: 800,
+            marginBottom: ".28rem",
+            letterSpacing: "-.01em",
+          }}
+        >
+          {s.title}
+        </h3>
+      </a>
       <div
         style={{
           color: s.accent,
