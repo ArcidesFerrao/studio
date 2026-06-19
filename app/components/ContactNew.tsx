@@ -30,6 +30,7 @@ const WaIcon = () => (
 function buildWaMessage(form: {
   name: string;
   phone: string;
+  email?: string;
   service: string;
   message: string;
 }) {
@@ -37,6 +38,7 @@ function buildWaMessage(form: {
     `Olá WebStudio! 👋\n\nVim através do site e quero falar sobre um projecto.\n\n` +
       `👤 Nome: ${form.name}\n` +
       `📱 Telefone: ${form.phone}\n` +
+      `✉️ Email: ${form.email || "Não especificado"}\n` +
       `🛠️ Serviço: ${form.service || "Não especificado"}\n\n` +
       `📝 Mensagem:\n${form.message}\n\n` +
       `Aguardo resposta. Obrigado!`,
@@ -51,6 +53,7 @@ export function ContactNew() {
   const [form, setForm] = useState({
     name: "",
     phone: "",
+    email: "",
     service: "",
     message: "",
   });
@@ -427,6 +430,16 @@ export function ContactNew() {
                       required
                     />
                   </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>Email</label>
+                  <input
+                    className="ws-input"
+                    value={form.email}
+                    onChange={update("email")}
+                    placeholder="seu.email@exemplo.com"
+                    required
+                  />
                 </div>
 
                 {/* Serviço */}

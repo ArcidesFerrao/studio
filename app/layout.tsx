@@ -63,7 +63,7 @@ export const metadata: Metadata = {
   },
 
   verification: {
-    google: "SEU_GOOGLE_SEARCH_CONSOLE_TOKEN",
+    google: "GOOGLE_SEARCH_CONSOLE_TOKEN",
   },
 };
 
