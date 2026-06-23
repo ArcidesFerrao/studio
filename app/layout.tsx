@@ -1,5 +1,4 @@
 import MetaPixelProvider from "./components/MetaPixelProvider";
-// @ts-expect-error CSS import without type declaration
 import "./webstudio.css";
 import type { Metadata } from "next";
 // import Image from "next/image";
