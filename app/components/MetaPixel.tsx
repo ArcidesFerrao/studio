@@ -4,12 +4,12 @@ import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
 
-declare global {
-  interface Window {
-    fbq?: (...args: unknown[]) => void;
-    _fbq?: unknown;
-  }
-}
+// declare global {
+//   interface Window {
+//     fbq?: (...args: unknown[]) => void;
+//     _fbq?: unknown;
+//   }
+// }
 
 export default function MetaPixel({ pixelId }: { pixelId: string }) {
   const pathname = usePathname();

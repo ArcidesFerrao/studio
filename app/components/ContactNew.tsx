@@ -80,13 +80,21 @@ export function ContactNew() {
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error();
+      await fetch("/api/meta-event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventName: "Lead",
+          eventSourceUrl: window.location.href,
+        }),
+      });
       setStatus("success");
     } catch {
       setStatus("error");
     }
   };
 
-  const handleWhatsApp = () => {
+  const handleWhatsApp = async () => {
     if (typeof window !== "undefined" && window.fbq) {
       window.fbq("track", "Contact");
     }
@@ -94,6 +102,14 @@ export function ContactNew() {
       `https://wa.me/${WA_NUMBER}?text=${buildWaMessage(form)}`,
       "_blank",
     );
+    await fetch("/api/meta-event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventName: "Lead",
+        eventSourceUrl: window.location.href,
+      }),
+    });
   };
 
   return (
