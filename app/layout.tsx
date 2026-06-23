@@ -1,6 +1,7 @@
+import MetaPixelProvider from "./components/MetaPixelProvider";
 import "./webstudio.css";
 import type { Metadata } from "next";
-import Image from "next/image";
+// import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Web Studio — Sites Profissionais em Maputo | Evolure Labs",
@@ -75,7 +76,7 @@ export default function WebStudioLayout({
   return (
     <html lang="pt">
       <head>
-        <script>
+        {/* <script id="meta-pixel" strategy="afterInteractive">
           {`
           !function(f,b,e,v,n,t,s)
           {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -97,9 +98,10 @@ export default function WebStudioLayout({
             style={{ display: "none" }}
             src="https://www.facebook.com/tr?id=1677909396804331&ev=PageView&noscript=1"
           />
-        </noscript>
+        </noscript> */}
       </head>
       <body className="ws">
+        <MetaPixelProvider pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID!} />
         {children}
 
         <a

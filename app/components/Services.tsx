@@ -13,7 +13,7 @@ const SERVICES = [
     accent: "#1D9E75",
     glow: "rgba(29,158,117,0.08)",
     tags: ["Next.js", "SEO", "Animações", "Responsivo"],
-    wpp: "https://wa.me/258843123456?text=Olá%20Evolure%20Labs,%20tenho%20interesse%20em%20uma%20landing%20page%20profissional.%20Podem%20me%20enviar%20mais%20informações?",
+    wpp: "https://wa.me/258852740554?text=Olá%20Evolure%20Labs,%20tenho%20interesse%20em%20uma%20landing%20page%20profissional.%20Podem%20me%20enviar%20mais%20informações?",
   },
   {
     num: "02",
@@ -25,7 +25,7 @@ const SERVICES = [
     accent: "#4a8fd4",
     glow: "rgba(74,143,212,0.08)",
     tags: ["Multi-página", "CMS", "Blog", "Analytics"],
-    wpp: "https://wa.me/258843123456?text=Olá%20Evolure%20Labs,%20tenho%20interesse%20em%20um%20site%20completo.%20Podem%20me%20enviar%20mais%20informações?",
+    wpp: "https://wa.me/258852740554?text=Olá%20Evolure%20Labs,%20tenho%20interesse%20em%20um%20site%20completo.%20Podem%20me%20enviar%20mais%20informações?",
   },
   {
     num: "03",
@@ -36,7 +36,7 @@ const SERVICES = [
     accent: "#e89c35",
     glow: "rgba(232,156,53,0.08)",
     tags: ["Loja Online", "Pagamentos", "Admin", "Stock"],
-    wpp: "https://wa.me/258843123456?text=Olá%20Evolure%20Labs,%20tenho%20interesse%20em%20um%20e-commerce.%20Podem%20me%20enviar%20mais%20informações?",
+    wpp: "https://wa.me/258852740554?text=Olá%20Evolure%20Labs,%20tenho%20interesse%20em%20um%20e-commerce.%20Podem%20me%20enviar%20mais%20informações?",
   },
   {
     num: "04",
@@ -47,6 +47,7 @@ const SERVICES = [
     accent: "#8b7fe8",
     glow: "rgba(139,127,232,0.08)",
     tags: ["Dashboard", "API", "Automação", "Integração"],
+    wpp: "https://wa.me/258852740554?text=Olá%20Evolure%20Labs,%20tenho%20interesse%20em%20uma%20solução%20personalizada.%20Podem%20me%20enviar%20mais%20informações?",
   },
 ];
 
