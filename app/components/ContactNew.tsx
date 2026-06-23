@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
 import { useReveal } from "./useReveal";
-declare global {
-  interface Window {
-    fbq?: (event: string, action: string) => void;
-  }
-}
+// declare global {
+//   interface Window {
+//     fbq?: (event: string, action: string) => void;
+//   }
+// }
 type Status = "idle" | "loading" | "success" | "error";
 
 const Arrow = () => (
