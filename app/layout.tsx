@@ -1,8 +1,19 @@
 import MetaPixelProvider from "./components/MetaPixelProvider";
+import { Syne, DM_Sans } from "next/font/google";
 import "./webstudio.css";
 import type { Metadata } from "next";
 // import Image from "next/image";
+const syne = Syne({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-display",
+});
 
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-body",
+});
 export const metadata: Metadata = {
   title: "Web Studio — Sites Profissionais em Maputo | Evolure Labs",
   description:
@@ -74,7 +85,7 @@ export default function WebStudioLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt">
+    <html lang="pt" className={`${syne.variable} ${dmSans.variable}`}>
       <head>
         {/* <script id="meta-pixel" strategy="afterInteractive">
           {`
