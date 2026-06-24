@@ -117,7 +117,7 @@ export default function WebStudioLayout({
 
         <a
           href="https://wa.me/258852740554?text=Olá%2C+Vi+o+vosso+anúncio+sobre+a+landing+page+de+7.500+MZN.+Tenho+um+[negocio]+em+[bairro].+Como+funciona?"
-          className="text-xs  fixed bottom-10 right-6 z-50  flex items-center justify-center gap-2 bg-[#25D366] text-[#0B0F1C] font-bold px-3 py-2 rounded-full shadow-lg md:hidden "
+          className="text-xs  fixed bottom-10 right-6 z-50  flex items-center justify-center gap-2 bg-[#1d9e75] text-[#0B0F1C] font-bold px-3 py-2 rounded-full shadow-lg md:hidden "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
