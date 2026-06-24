@@ -23,6 +23,8 @@
   --ws-amber: #e89c35;
   --ws-purple: #8b7fe8;
   --ws-red: #dc5555;
+  --font-display: "Syne", sans-serif;
+  --font-body: "DM Sans", sans-serif;
 
   /* typography */
   font-family: var(--font-body, "DM Sans", sans-serif);

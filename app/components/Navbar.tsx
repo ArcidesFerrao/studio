@@ -7,7 +7,7 @@ const NAV = [
   { href: "#services", label: "Serviços" },
   { href: "#projects", label: "Projetos" },
   { href: "#process", label: "Processo" },
-  { href: "#about", label: "Sobre" },
+  // { href: "#about", label: "Sobre" },
 ];
 
 export function Navbar() {
