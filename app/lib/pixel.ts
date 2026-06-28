@@ -19,19 +19,19 @@ export function generateEventId(): string {
 
 export function trackPixel(
   eventName: string,
-  params?: Record<string, unknown>
+  params?: Record<string, unknown>,
+ userData?: { email?: string; phone?: string; name?: string }
 ) {
   if (typeof window === "undefined" || !window.fbq) return;
 
   const eventId = generateEventId();
   window.fbq("track", eventName, params ?? {}, { eventID: eventId });
 
-  // Envia também via server (Conversions API) com o mesmo eventId
   fetch("/api/pixel-event", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ eventName, params, eventId }),
-  }).catch(() => {}); // silencioso
+    body: JSON.stringify({ eventName, params, eventId, userData }),
+  }).catch(() => {});
 
   return eventId;
 }

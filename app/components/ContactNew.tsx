@@ -70,10 +70,14 @@ export function ContactNew() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    trackPixel("Contact", {
-      content_name: "Formulário de Contacto",
-      content_category: form.service || "Não especificado",
-    });
+    trackPixel(
+      "Contact",
+      {
+        content_name: "Formulário de Contacto",
+        content_category: form.service || "Não especificado",
+      },
+      { email: form.email, phone: form.phone, name: form.name },
+    );
     setStatus("loading");
     try {
       const res = await fetch("/api/contact", {

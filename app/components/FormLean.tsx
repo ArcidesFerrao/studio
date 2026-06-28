@@ -1315,10 +1315,14 @@ export function DiagnosticQuiz() {
     setResult(r);
 
     // ← ADICIONA AQUI
-    trackPixel("Lead", {
-      content_name: "Diagnóstico WebStudio",
-      content_category: "Quiz Lead",
-    });
+    trackPixel(
+      "Lead",
+      {
+        content_name: "Diagnóstico WebStudio",
+        content_category: "Quiz Lead",
+      },
+      { phone: data.phone, name: data.name },
+    );
 
     setScreen("result");
   };

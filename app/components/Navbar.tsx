@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { trackCustom } from "../lib/pixel";
 
 const NAV = [
   { href: "#services", label: "Serviços" },
@@ -84,6 +85,7 @@ export function Navbar() {
           <a
             href="#contact"
             className="ws-btn"
+            onClick={() => trackCustom("Interest", { content_name: "AskMore" })}
             style={{ padding: ".5rem 1.2rem", fontSize: ".84rem" }}
           >
             Pedir Orçamento

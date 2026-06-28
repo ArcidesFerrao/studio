@@ -1,9 +1,23 @@
 // app/api/pixel-event/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
+import { createHash } from "crypto";
+
+function sha256(value: string) {
+  return createHash("sha256").update(value.trim().toLowerCase()).digest("hex");
+}
 
 export async function POST(req: NextRequest) {
-  const { eventName, params, eventId } = await req.json();
+  const { eventName, params, eventId, userData } = await req.json();
+
+  const user_data: Record<string, string> = {
+    client_ip_address:
+      req.headers.get("x-forwarded-for")?.split(",")[0] ?? "",
+    client_user_agent: req.headers.get("user-agent") ?? "",
+  };
+
+  if (userData?.email) user_data.em = sha256(userData.email);
+  if (userData?.phone) user_data.ph = sha256(userData.phone.replace(/\D/g, ""));
 
   const payload = {
     data: [{
@@ -12,10 +26,7 @@ export async function POST(req: NextRequest) {
       event_id: eventId, // ← MESMO ID do browser
       action_source: 'website',
       event_source_url: req.headers.get('referer') ?? '',
-      user_data: {
-        client_ip_address: req.headers.get('x-forwarded-for') ?? '',
-        client_user_agent: req.headers.get('user-agent') ?? '',
-      },
+      user_data,
       custom_data: params ?? {},
     }],
   };

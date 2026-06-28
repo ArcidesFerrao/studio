@@ -1,4 +1,7 @@
 "use client";
+
+import { trackCustom } from "../lib/pixel";
+
 const Arrow = () => (
   <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
     <path
@@ -179,10 +182,22 @@ export function Hero() {
             flexWrap: "wrap",
           }}
         >
-          <a href="#projects" className="ws-btn">
+          <a
+            href="#projects"
+            onClick={() =>
+              trackCustom("ViewPortfolio", { content_name: "Projectos" })
+            }
+            className="ws-btn"
+          >
             Ver Projetos <Arrow />
           </a>
-          <a href="#contact" className="ws-btn-ghost">
+          <a
+            href="#contact"
+            onClick={() =>
+              trackCustom("Interest", { content_name: "Pedir Orçamento" })
+            }
+            className="ws-btn-ghost"
+          >
             Pedir Orçamento
           </a>
         </div>
