@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useReveal } from "./useReveal";
+import { trackCustom, trackPixel } from "../lib/pixel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Screen = "intro" | "quiz" | "lead" | "result";
@@ -469,7 +470,16 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
             ))}
           </div>
           <div>
-            <BtnPrimary onClick={onStart}>Iniciar Diagnóstico →</BtnPrimary>
+            <BtnPrimary
+              onClick={() => {
+                trackCustom("QuizStart", {
+                  content_name: "Diagnóstico WebStudio",
+                });
+                onStart();
+              }}
+            >
+              Iniciar Diagnóstico →
+            </BtnPrimary>
             <p
               style={{
                 textAlign: "center",
@@ -988,6 +998,10 @@ function ResultScreen({
   }, []);
 
   const openWA = () => {
+    trackPixel("Contact", {
+      content_name: "WhatsApp CTA - Resultado Diagnóstico",
+      value: result.opp,
+    });
     const challenge = QUESTIONS[6]?.opts[answers[6]] ?? "Não especificado";
     const budget = QUESTIONS[7]?.opts[answers[7]] ?? "Não especificado";
     const presence = QUESTIONS[2]?.opts[answers[2]] ?? "Não especificado";
@@ -1286,6 +1300,11 @@ export function DiagnosticQuiz() {
     if (next < QUESTIONS.length) {
       setCur(next);
     } else {
+      // ← ADICIONA AQUI
+      trackCustom("QuizComplete", {
+        content_name: "Diagnóstico WebStudio",
+        num_items: QUESTIONS.length,
+      });
       setScreen("lead");
     }
   };
@@ -1294,6 +1313,13 @@ export function DiagnosticQuiz() {
     setLead(data);
     const r = buildResult(scores, answers, data.name);
     setResult(r);
+
+    // ← ADICIONA AQUI
+    trackPixel("Lead", {
+      content_name: "Diagnóstico WebStudio",
+      content_category: "Quiz Lead",
+    });
+
     setScreen("result");
   };
 
