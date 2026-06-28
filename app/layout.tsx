@@ -1,6 +1,6 @@
 import MetaPixelProvider from "./components/MetaPixelProvider";
 import { Syne, DM_Sans } from "next/font/google";
-// import "./webstudio.css";
+import "./webstudio.css";
 import type { Metadata } from "next";
 import WAFab from "./components/WAFab";
 // import Image from "next/image";
