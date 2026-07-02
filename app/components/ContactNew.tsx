@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useReveal } from "./useReveal";
-import { trackPixel } from "../lib/pixel";
+import { trackCustom, trackPixel } from "../lib/pixel";
 // declare global {
 //   interface Window {
 //     fbq?: (event: string, action: string) => void;
@@ -94,7 +94,7 @@ export function ContactNew() {
   };
 
   const handleWhatsApp = async () => {
-    trackPixel("Contact", {
+    trackCustom("ContactWpp", {
       content_name: "WhatsApp - Formulário de Contacto",
       content_category: form.service || "Não especificado",
     });

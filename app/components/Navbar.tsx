@@ -85,7 +85,9 @@ export function Navbar() {
           <a
             href="#contact"
             className="ws-btn"
-            onClick={() => trackCustom("Interest", { content_name: "AskMore" })}
+            onClick={() =>
+              trackCustom("Interest", { content_name: "Pedir Orçamento" })
+            }
             style={{ padding: ".5rem 1.2rem", fontSize: ".84rem" }}
           >
             Pedir Orçamento

@@ -998,7 +998,7 @@ function ResultScreen({
   }, []);
 
   const openWA = () => {
-    trackPixel("Contact", {
+    trackCustom("ContactWpp", {
       content_name: "WhatsApp CTA - Resultado Diagnóstico",
       value: result.opp,
     });

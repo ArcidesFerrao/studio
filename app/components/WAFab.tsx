@@ -8,8 +8,8 @@ const WA_TEXT =
 
 export default function WAFab() {
   const handleClick = () => {
-    trackCustom("ClickFAB", {
-      content_name: "FAB WhatsApp",
+    trackCustom("ContactWppBtn", {
+      content_name: "Contactar pelo WhatsApp",
       content_category: "CTA",
     });
     window.open(`https://wa.me/${WA_NUMBER}?text=${WA_TEXT}`, "_blank");
