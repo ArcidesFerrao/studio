@@ -1,20 +1,36 @@
 {
-  "name": "webstudio",
+  "name": "webstudio-backend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:views": "psql \"$DATABASE_URL\" -f prisma/views.sql",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "next": "15.2.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "resend": "^6.12.3"
+    "resend": "^6.12.3",
+    "next-auth": "^4.24.7",
+    "@prisma/client": "^5.19.0",
+    "bcryptjs": "^2.4.3",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "prisma": "^5.19.0",
+    "tsx": "^4.16.2",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

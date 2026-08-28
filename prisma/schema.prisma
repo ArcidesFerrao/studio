@@ -1,0 +1,537 @@
+// ============================================================================
+// WEBSTUDIO — schema Prisma (schema "operational")
+// A schema "integration" (views para o Evolure Intelligence) é criada via
+// prisma/views.sql, pois são views SQL somente-leitura, não tabelas.
+// ============================================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["operational", "integration"]
+}
+
+// ---------------------------------------------------------------------------
+// ENUMS
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  ADMIN
+  STAFF
+  CLIENT
+
+  @@schema("operational")
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL_SENT
+  WON
+  LOST
+
+  @@schema("operational")
+}
+
+enum ProposalStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
+
+  @@schema("operational")
+}
+
+enum ContractStatus {
+  DRAFT
+  SIGNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+
+  @@schema("operational")
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+
+  @@schema("operational")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+
+  @@schema("operational")
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+
+  @@schema("operational")
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+
+  @@schema("operational")
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  MPESA
+  EMOLA
+  CARD
+  CASH
+  OTHER
+
+  @@schema("operational")
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+
+  @@schema("operational")
+}
+
+enum ExpenseCategory {
+  SOFTWARE
+  HOSTING
+  MARKETING
+  EQUIPMENT
+  CONTRACTOR
+  TAXES
+  OTHER
+
+  @@schema("operational")
+}
+
+enum CampaignStatus {
+  PLANNED
+  ACTIVE
+  PAUSED
+  COMPLETED
+
+  @@schema("operational")
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+
+  @@schema("operational")
+}
+
+enum OutboxStatus {
+  PENDING
+  PROCESSED
+  FAILED
+
+  @@schema("operational")
+}
+
+// ---------------------------------------------------------------------------
+// USERS & SECURITY
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String?
+  role         UserRole @default(STAFF)
+  image        String?
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  leadsOwned       Lead[]         @relation("LeadOwner")
+  proposalsCreated Proposal[]     @relation("ProposalCreator")
+  projectsOwned    Project[]      @relation("ProjectOwner")
+  tasksAssigned    Task[]         @relation("TaskAssignee")
+  expensesCreated  Expense[]      @relation("ExpenseCreator")
+  filesUploaded    FileAsset[]    @relation("FileUploader")
+  notifications    Notification[]
+  apiKeys          ApiKey[]
+  activities       Activity[]     @relation("ActivityUser")
+  auditLogs        AuditLog[]     @relation("AuditActor")
+
+  @@map("users")
+  @@schema("operational")
+}
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  name       String
+  prefix     String
+  keyHash    String
+  scopes     String[]  @default([])
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
+  lastUsedAt DateTime?
+  expiresAt  DateTime?
+  revoked    Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+
+  @@map("api_keys")
+  @@schema("operational")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  action     String
+  entityType String
+  entityId   String
+  actorId    String?
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id])
+  before     Json?
+  after      Json?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@map("audit_logs")
+  @@schema("operational")
+}
+
+// ---------------------------------------------------------------------------
+// CLIENTS & LEADS
+// ---------------------------------------------------------------------------
+
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  company   String?
+  taxId     String?
+  address   String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  leads      Lead[]
+  proposals  Proposal[]
+  contracts  Contract[]
+  projects   Project[]
+  invoices   Invoice[]
+  activities Activity[] @relation("ActivityClient")
+
+  @@map("clients")
+  @@schema("operational")
+}
+
+model Lead {
+  id        String     @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  source    String? // site, referral, campanha, etc.
+  message   String?
+  status    LeadStatus @default(NEW)
+  ownerId   String?
+  owner     User?      @relation("LeadOwner", fields: [ownerId], references: [id])
+  clientId  String? // preenchido quando o lead é convertido em cliente
+  client    Client?    @relation(fields: [clientId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  proposals Proposal[]
+
+  @@map("leads")
+  @@schema("operational")
+}
+
+// ---------------------------------------------------------------------------
+// CATÁLOGO DE SERVIÇOS
+// ---------------------------------------------------------------------------
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  basePrice   Decimal  @db.Decimal(14, 2)
+  unit        String   @default("projeto") // projeto, hora, mês
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("services")
+  @@schema("operational")
+}
+
+// ---------------------------------------------------------------------------
+// PIPELINE COMERCIAL: PROPOSTA -> CONTRATO -> PROJETO
+// ---------------------------------------------------------------------------
+
+model Proposal {
+  id          String         @id @default(cuid())
+  clientId    String
+  client      Client         @relation(fields: [clientId], references: [id])
+  leadId      String?
+  lead        Lead?          @relation(fields: [leadId], references: [id])
+  title       String
+  description String?
+  items       Json // [{ serviceId?, description, quantity, unitPrice }]
+  totalAmount Decimal        @db.Decimal(14, 2)
+  status      ProposalStatus @default(DRAFT)
+  validUntil  DateTime?
+  sentAt      DateTime?
+  respondedAt DateTime?
+  createdById String?
+  createdBy   User?          @relation("ProposalCreator", fields: [createdById], references: [id])
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  contract Contract?
+
+  @@map("proposals")
+  @@schema("operational")
+}
+
+model Contract {
+  id         String         @id @default(cuid())
+  clientId   String
+  client     Client         @relation(fields: [clientId], references: [id])
+  proposalId String?        @unique
+  proposal   Proposal?      @relation(fields: [proposalId], references: [id])
+  title      String
+  terms      String?
+  value      Decimal        @db.Decimal(14, 2)
+  startDate  DateTime?
+  endDate    DateTime?
+  status     ContractStatus @default(DRAFT)
+  signedAt   DateTime?
+  fileUrl    String?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  projects Project[]
+
+  @@map("contracts")
+  @@schema("operational")
+}
+
+// ---------------------------------------------------------------------------
+// EXECUÇÃO: PROJETOS & TAREFAS
+// ---------------------------------------------------------------------------
+
+model Project {
+  id          String        @id @default(cuid())
+  clientId    String
+  client      Client        @relation(fields: [clientId], references: [id])
+  contractId  String?
+  contract    Contract?     @relation(fields: [contractId], references: [id])
+  name        String
+  description String?
+  status      ProjectStatus @default(PLANNING)
+  budget      Decimal?      @db.Decimal(14, 2)
+  startDate   DateTime?
+  dueDate     DateTime?
+  completedAt DateTime?
+  ownerId     String?
+  owner       User?         @relation("ProjectOwner", fields: [ownerId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  tasks    Task[]
+  invoices Invoice[]
+  expenses Expense[]
+
+  @@map("projects")
+  @@schema("operational")
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  projectId   String
+  project     Project      @relation(fields: [projectId], references: [id])
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  assigneeId  String?
+  assignee    User?        @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("tasks")
+  @@schema("operational")
+}
+
+// ---------------------------------------------------------------------------
+// FINANCEIRO: FATURAS, PAGAMENTOS, DESPESAS
+// ---------------------------------------------------------------------------
+
+model Invoice {
+  id        String        @id @default(cuid())
+  number    String        @unique
+  clientId  String
+  client    Client        @relation(fields: [clientId], references: [id])
+  projectId String?
+  project   Project?      @relation(fields: [projectId], references: [id])
+  items     Json // [{ description, quantity, unitPrice }]
+  subtotal  Decimal       @db.Decimal(14, 2)
+  tax       Decimal       @default(0) @db.Decimal(14, 2)
+  total     Decimal       @db.Decimal(14, 2)
+  status    InvoiceStatus @default(DRAFT)
+  dueDate   DateTime?
+  paidAt    DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  payments Payment[]
+
+  @@map("invoices")
+  @@schema("operational")
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  invoiceId String
+  invoice   Invoice       @relation(fields: [invoiceId], references: [id])
+  amount    Decimal       @db.Decimal(14, 2)
+  method    PaymentMethod
+  status    PaymentStatus @default(PENDING)
+  reference String?
+  paidAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  @@map("payments")
+  @@schema("operational")
+}
+
+model Expense {
+  id          String          @id @default(cuid())
+  category    ExpenseCategory
+  description String
+  amount      Decimal         @db.Decimal(14, 2)
+  date        DateTime        @default(now())
+  projectId   String?
+  project     Project?        @relation(fields: [projectId], references: [id])
+  createdById String?
+  createdBy   User?           @relation("ExpenseCreator", fields: [createdById], references: [id])
+  createdAt   DateTime        @default(now())
+
+  @@map("expenses")
+  @@schema("operational")
+}
+
+// ---------------------------------------------------------------------------
+// MARKETING
+// ---------------------------------------------------------------------------
+
+model Campaign {
+  id        String         @id @default(cuid())
+  name      String
+  channel   String // email, social, ads, referral...
+  budget    Decimal?       @db.Decimal(14, 2)
+  status    CampaignStatus @default(PLANNED)
+  startDate DateTime?
+  endDate   DateTime?
+  metrics   Json? // { impressions, clicks, leads, conversions }
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@map("campaigns")
+  @@schema("operational")
+}
+
+// ---------------------------------------------------------------------------
+// ARQUIVOS, ATIVIDADES & NOTIFICAÇÕES
+// ---------------------------------------------------------------------------
+
+model FileAsset {
+  id           String   @id @default(cuid())
+  filename     String
+  url          String
+  mimeType     String
+  size         Int
+  entityType   String // Client, Project, Proposal, Contract...
+  entityId     String
+  uploadedById String?
+  uploadedBy   User?    @relation("FileUploader", fields: [uploadedById], references: [id])
+  createdAt    DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@map("files")
+  @@schema("operational")
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  type        String // lead.created, proposal.sent, invoice.paid...
+  description String
+  entityType  String
+  entityId    String
+  userId      String?
+  user        User?    @relation("ActivityUser", fields: [userId], references: [id])
+  clientId    String?
+  client      Client?  @relation("ActivityClient", fields: [clientId], references: [id])
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@map("activities")
+  @@schema("operational")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  type      NotificationType @default(INFO)
+  title     String
+  message   String
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  @@map("notifications")
+  @@schema("operational")
+}
+
+// ---------------------------------------------------------------------------
+// EVENT SYSTEM (Outbox pattern — mesmo princípio usado no Evolure Intelligence)
+// ---------------------------------------------------------------------------
+
+model Outbox {
+  id          String       @id @default(cuid())
+  eventType   String // client.created, lead.created, invoice.paid...
+  payload     Json
+  status      OutboxStatus @default(PENDING)
+  attempts    Int          @default(0)
+  createdAt   DateTime     @default(now())
+  processedAt DateTime?
+
+  @@index([status])
+  @@map("outbox")
+  @@schema("operational")
+}
