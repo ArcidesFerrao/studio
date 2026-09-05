@@ -1,7 +1,6 @@
-import { prisma } from "@/lib/db";
-import { publishEvent } from "@/lib/events/publisher";
-import { AppError } from "@/lib/api-response";
-import type { WebstudioEventType } from "@/lib/events/types";
+import { publishEvent } from "@/app/lib/events/publisher";
+import { AppError } from "@/app/lib/api-response";
+import type { WebstudioEventType } from "@/app/lib/events/types";
 
 type Delegate = {
   findMany: (args: any) => Promise<any[]>;

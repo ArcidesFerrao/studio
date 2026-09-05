@@ -1,9 +1,9 @@
 -- ============================================================================
 -- WEBSTUDIO — views da schema "integration"
 -- Espelham o padrão já usado pela Contela: uma camada de leitura, plana e
--- estável, que o futuro WebstudioConnector do Evolure Intelligence vai
--- consumir (raw -> staging -> core...), sem acoplar o pipeline de analytics
--- ao schema interno/operacional do Webstudio.
+-- estável, que o WebstudioConnector do Evolure Intelligence consome
+-- (raw -> staging -> core...), sem acoplar o pipeline de analytics aos
+-- schemas internos do Webstudio (shared / commercial / delivery / development).
 --
 -- Rodar depois de `prisma migrate deploy`:
 --   psql $DATABASE_URL -f prisma/views.sql
@@ -20,7 +20,7 @@ SELECT
   c.company,
   c.created_at,
   c.updated_at
-FROM operational.clients c;
+FROM shared.clients c;
 
 -- leads -------------------------------------------------------------------
 CREATE OR REPLACE VIEW integration.leads AS
@@ -32,7 +32,7 @@ SELECT
   l.status,
   l.client_id,
   l.created_at
-FROM operational.leads l;
+FROM commercial.leads l;
 
 -- projects ------------------------------------------------------------------
 CREATE OR REPLACE VIEW integration.projects AS
@@ -46,7 +46,7 @@ SELECT
   p.due_date,
   p.completed_at,
   p.created_at
-FROM operational.projects p;
+FROM delivery.projects p;
 
 -- revenue (faturas confirmadas, view analítica agregada por fatura) --------
 CREATE OR REPLACE VIEW integration.revenue AS
@@ -58,7 +58,7 @@ SELECT
   i.status,
   i.paid_at,
   i.created_at
-FROM operational.invoices i
+FROM commercial.invoices i
 WHERE i.status = 'PAID';
 
 -- invoices ------------------------------------------------------------------
@@ -75,7 +75,7 @@ SELECT
   i.due_date,
   i.paid_at,
   i.created_at
-FROM operational.invoices i;
+FROM commercial.invoices i;
 
 -- payments --------------------------------------------------------------
 CREATE OR REPLACE VIEW integration.payments AS
@@ -88,8 +88,8 @@ SELECT
   pay.status,
   pay.paid_at,
   pay.created_at
-FROM operational.payments pay
-JOIN operational.invoices inv ON inv.id = pay.invoice_id;
+FROM commercial.payments pay
+JOIN commercial.invoices inv ON inv.id = pay.invoice_id;
 
 -- expenses --------------------------------------------------------------
 CREATE OR REPLACE VIEW integration.expenses AS
@@ -101,7 +101,7 @@ SELECT
   e.date,
   e.project_id,
   e.created_at
-FROM operational.expenses e;
+FROM commercial.expenses e;
 
 -- activities ------------------------------------------------------------
 CREATE OR REPLACE VIEW integration.activities AS
@@ -112,4 +112,17 @@ SELECT
   a.entity_id,
   a.client_id AS customer_id,
   a.created_at
-FROM operational.activities a;
+FROM shared.activities a;
+
+-- development_activity ---------------------------------------------------
+-- NOVO: expõe a atividade de desenvolvimento (Development Lab) para o
+-- Evolure Intelligence poder correlacionar foco/commits com entregas.
+CREATE OR REPLACE VIEW integration.development_activity AS
+SELECT
+  da.id,
+  da.user_id,
+  da.date,
+  da.event_count,
+  da.focus_secs,
+  da.created_at
+FROM development.development_activity da;

@@ -1,8 +1,9 @@
-import { prisma } from "@/lib/db";
-import { publishEvent } from "@/lib/events/publisher";
-import { AppError } from "@/lib/api-response";
+import { prisma } from "@/app/lib/db";
+import { publishEvent } from "@/app/lib/events/publisher";
+import { AppError } from "@/app/lib/api-response";
 import type { z } from "zod";
-import type { invoiceSchema } from "@/lib/validators";
+import type { invoiceSchema } from "@/app/lib/validators";
+import type { Prisma } from "@prisma/client";
 
 type InvoiceInput = z.infer<typeof invoiceSchema>;
 
@@ -83,7 +84,7 @@ export const invoiceService = {
   },
 
   /** Recalcula o estado da fatura com base no total já pago. Chamado pelo payment.service. */
-  async recalculateStatus(id: string, tx = prisma) {
+  async recalculateStatus(id: string, tx: Prisma.TransactionClient = prisma) {
     const invoice = await tx.invoice.findUniqueOrThrow({
       where: { id },
       include: { payments: { where: { status: "COMPLETED" } } },

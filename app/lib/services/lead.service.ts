@@ -1,8 +1,8 @@
-import { prisma } from "@/lib/db";
-import { publishEvent } from "@/lib/events/publisher";
-import { AppError } from "@/lib/api-response";
+import { prisma } from "@/app/lib/db";
+import { publishEvent } from "@/app/lib/events/publisher";
+import { AppError } from "@/app/lib/api-response";
 import type { z } from "zod";
-import type { leadSchema, leadUpdateSchema } from "@/lib/validators";
+import type { leadSchema, leadUpdateSchema } from "@/app/lib/validators";
 
 type LeadInput = z.infer<typeof leadSchema>;
 type LeadUpdateInput = z.infer<typeof leadUpdateSchema>;

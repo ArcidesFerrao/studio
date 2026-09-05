@@ -1,7 +1,11 @@
 // ============================================================================
-// WEBSTUDIO — schema Prisma (schema "operational")
-// A schema "integration" (views para o Evolure Intelligence) é criada via
-// prisma/views.sql, pois são views SQL somente-leitura, não tabelas.
+// WEBSTUDIO — schema Prisma
+// Estrutura de schemas do PostgreSQL espelha exatamente os módulos da
+// arquitetura documentada (INTELLIGENCE & DEVELOPMENT INFRASTRUCTURE v3):
+//   shared / commercial / delivery / development / integration / reporting
+// "integration" (singular) continua sendo as views somente-leitura para o
+// Evolure Intelligence, criadas via prisma/views.sql — não confundir com
+// "integrations" (plural, módulo de conectores GitHub/CI-CD em app/api).
 // ============================================================================
 
 generator client {
@@ -11,8 +15,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
-  schemas  = ["operational", "integration"]
+  schemas  = ["shared", "commercial", "delivery", "development", "integration", "reporting"]
 }
 
 // ---------------------------------------------------------------------------
@@ -24,7 +27,24 @@ enum UserRole {
   STAFF
   CLIENT
 
-  @@schema("operational")
+  @@schema("shared")
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+
+  @@schema("shared")
+}
+
+enum OutboxStatus {
+  PENDING
+  PROCESSED
+  FAILED
+
+  @@schema("shared")
 }
 
 enum LeadStatus {
@@ -35,7 +55,7 @@ enum LeadStatus {
   WON
   LOST
 
-  @@schema("operational")
+  @@schema("commercial")
 }
 
 enum ProposalStatus {
@@ -45,7 +65,7 @@ enum ProposalStatus {
   REJECTED
   EXPIRED
 
-  @@schema("operational")
+  @@schema("commercial")
 }
 
 enum ContractStatus {
@@ -55,35 +75,7 @@ enum ContractStatus {
   COMPLETED
   CANCELLED
 
-  @@schema("operational")
-}
-
-enum ProjectStatus {
-  PLANNING
-  IN_PROGRESS
-  ON_HOLD
-  COMPLETED
-  CANCELLED
-
-  @@schema("operational")
-}
-
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  REVIEW
-  DONE
-
-  @@schema("operational")
-}
-
-enum TaskPriority {
-  LOW
-  MEDIUM
-  HIGH
-  URGENT
-
-  @@schema("operational")
+  @@schema("commercial")
 }
 
 enum InvoiceStatus {
@@ -93,7 +85,7 @@ enum InvoiceStatus {
   OVERDUE
   CANCELLED
 
-  @@schema("operational")
+  @@schema("commercial")
 }
 
 enum PaymentMethod {
@@ -104,7 +96,7 @@ enum PaymentMethod {
   CASH
   OTHER
 
-  @@schema("operational")
+  @@schema("commercial")
 }
 
 enum PaymentStatus {
@@ -113,7 +105,7 @@ enum PaymentStatus {
   FAILED
   REFUNDED
 
-  @@schema("operational")
+  @@schema("commercial")
 }
 
 enum ExpenseCategory {
@@ -125,7 +117,7 @@ enum ExpenseCategory {
   TAXES
   OTHER
 
-  @@schema("operational")
+  @@schema("commercial")
 }
 
 enum CampaignStatus {
@@ -134,28 +126,101 @@ enum CampaignStatus {
   PAUSED
   COMPLETED
 
-  @@schema("operational")
+  @@schema("commercial")
 }
 
-enum NotificationType {
-  INFO
-  SUCCESS
-  WARNING
-  ERROR
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  ON_HOLD
+  COMPLETED
+  CANCELLED
 
-  @@schema("operational")
+  @@schema("delivery")
 }
 
-enum OutboxStatus {
-  PENDING
-  PROCESSED
-  FAILED
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
 
-  @@schema("operational")
+  @@schema("delivery")
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+
+  @@schema("delivery")
+}
+
+enum ObjectiveStatus {
+  ACTIVE
+  ACHIEVED
+  ABANDONED
+
+  @@schema("development")
+}
+
+enum PlanStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  MISSED
+
+  @@schema("development")
+}
+
+enum DevelopmentEventType {
+  COMMIT
+  BRANCH_CREATED
+  BRANCH_SWITCHED
+  PR_CREATED
+  PR_MERGED
+  DEPLOYMENT
+  BUILD_STARTED
+  BUILD_FAILED
+  BUILD_SUCCEEDED
+  TASK_STARTED
+  TASK_COMPLETED
+  BLOCKER_RAISED
+  BLOCKER_RESOLVED
+  INTERRUPTION
+  DECISION_LOGGED
+  FOCUS_ACTIVITY
+  MANUAL_ACTIVITY
+
+  @@schema("development")
+}
+
+enum DevelopmentEventSource {
+  GIT
+  GITHUB
+  IDE
+  TERMINAL
+  WEBSTUDIO_PLANNER
+  CI_CD
+  DEPLOYMENT
+  MANUAL
+
+  @@schema("development")
+}
+
+enum InterruptionSource {
+  NOTIFICATION
+  MEETING
+  CONTEXT_SWITCH
+  MANUAL
+  UNKNOWN
+
+  @@schema("development")
 }
 
 // ---------------------------------------------------------------------------
-// USERS & SECURITY
+// SHARED — users, clients, permissões, auditoria
 // ---------------------------------------------------------------------------
 
 model User {
@@ -180,8 +245,14 @@ model User {
   activities       Activity[]     @relation("ActivityUser")
   auditLogs        AuditLog[]     @relation("AuditActor")
 
+  developmentEvents    DevelopmentEvent[]
+  developmentLogs      DevelopmentLog[]
+  focusSessions        FocusSession[]
+  developmentDecisions DevelopmentDecision[]
+  objectivesOwned      Objective[]           @relation("ObjectiveOwner")
+
   @@map("users")
-  @@schema("operational")
+  @@schema("shared")
 }
 
 model ApiKey {
@@ -198,7 +269,7 @@ model ApiKey {
   createdAt  DateTime  @default(now())
 
   @@map("api_keys")
-  @@schema("operational")
+  @@schema("shared")
 }
 
 model AuditLog {
@@ -215,12 +286,8 @@ model AuditLog {
 
   @@index([entityType, entityId])
   @@map("audit_logs")
-  @@schema("operational")
+  @@schema("shared")
 }
-
-// ---------------------------------------------------------------------------
-// CLIENTS & LEADS
-// ---------------------------------------------------------------------------
 
 model Client {
   id        String   @id @default(cuid())
@@ -242,8 +309,59 @@ model Client {
   activities Activity[] @relation("ActivityClient")
 
   @@map("clients")
-  @@schema("operational")
+  @@schema("shared")
 }
+
+model Activity {
+  id          String   @id @default(cuid())
+  type        String // lead.created, proposal.sent, invoice.paid...
+  description String
+  entityType  String
+  entityId    String
+  userId      String?
+  user        User?    @relation("ActivityUser", fields: [userId], references: [id])
+  clientId    String?
+  client      Client?  @relation("ActivityClient", fields: [clientId], references: [id])
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@map("activities")
+  @@schema("shared")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  type      NotificationType @default(INFO)
+  title     String
+  message   String
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  @@map("notifications")
+  @@schema("shared")
+}
+
+model Outbox {
+  id          String       @id @default(cuid())
+  eventType   String // client.created, lead.created, invoice.paid, development_event.created...
+  payload     Json
+  status      OutboxStatus @default(PENDING)
+  attempts    Int          @default(0)
+  createdAt   DateTime     @default(now())
+  processedAt DateTime?
+
+  @@index([status])
+  @@map("outbox")
+  @@schema("shared")
+}
+
+// ---------------------------------------------------------------------------
+// COMMERCIAL — leads, propostas, contratos, faturação, marketing
+// ---------------------------------------------------------------------------
 
 model Lead {
   id        String     @id @default(cuid())
@@ -251,12 +369,12 @@ model Lead {
   email     String
   phone     String?
   company   String?
-  source    String? // site, referral, campanha, etc.
+  source    String?
   message   String?
   status    LeadStatus @default(NEW)
   ownerId   String?
   owner     User?      @relation("LeadOwner", fields: [ownerId], references: [id])
-  clientId  String? // preenchido quando o lead é convertido em cliente
+  clientId  String?
   client    Client?    @relation(fields: [clientId], references: [id])
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -264,30 +382,22 @@ model Lead {
   proposals Proposal[]
 
   @@map("leads")
-  @@schema("operational")
+  @@schema("commercial")
 }
-
-// ---------------------------------------------------------------------------
-// CATÁLOGO DE SERVIÇOS
-// ---------------------------------------------------------------------------
 
 model Service {
   id          String   @id @default(cuid())
   name        String
   description String?
   basePrice   Decimal  @db.Decimal(14, 2)
-  unit        String   @default("projeto") // projeto, hora, mês
+  unit        String   @default("projeto")
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@map("services")
-  @@schema("operational")
+  @@schema("commercial")
 }
-
-// ---------------------------------------------------------------------------
-// PIPELINE COMERCIAL: PROPOSTA -> CONTRATO -> PROJETO
-// ---------------------------------------------------------------------------
 
 model Proposal {
   id          String         @id @default(cuid())
@@ -297,7 +407,7 @@ model Proposal {
   lead        Lead?          @relation(fields: [leadId], references: [id])
   title       String
   description String?
-  items       Json // [{ serviceId?, description, quantity, unitPrice }]
+  items       Json
   totalAmount Decimal        @db.Decimal(14, 2)
   status      ProposalStatus @default(DRAFT)
   validUntil  DateTime?
@@ -311,7 +421,7 @@ model Proposal {
   contract Contract?
 
   @@map("proposals")
-  @@schema("operational")
+  @@schema("commercial")
 }
 
 model Contract {
@@ -334,11 +444,81 @@ model Contract {
   projects Project[]
 
   @@map("contracts")
-  @@schema("operational")
+  @@schema("commercial")
+}
+
+model Invoice {
+  id        String        @id @default(cuid())
+  number    String        @unique
+  clientId  String
+  client    Client        @relation(fields: [clientId], references: [id])
+  projectId String?
+  project   Project?      @relation(fields: [projectId], references: [id])
+  items     Json
+  subtotal  Decimal       @db.Decimal(14, 2)
+  tax       Decimal       @default(0) @db.Decimal(14, 2)
+  total     Decimal       @db.Decimal(14, 2)
+  status    InvoiceStatus @default(DRAFT)
+  dueDate   DateTime?
+  paidAt    DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  payments Payment[]
+
+  @@map("invoices")
+  @@schema("commercial")
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  invoiceId String
+  invoice   Invoice       @relation(fields: [invoiceId], references: [id])
+  amount    Decimal       @db.Decimal(14, 2)
+  method    PaymentMethod
+  status    PaymentStatus @default(PENDING)
+  reference String?
+  paidAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  @@map("payments")
+  @@schema("commercial")
+}
+
+model Expense {
+  id          String          @id @default(cuid())
+  category    ExpenseCategory
+  description String
+  amount      Decimal         @db.Decimal(14, 2)
+  date        DateTime        @default(now())
+  projectId   String?
+  project     Project?        @relation(fields: [projectId], references: [id])
+  createdById String?
+  createdBy   User?           @relation("ExpenseCreator", fields: [createdById], references: [id])
+  createdAt   DateTime        @default(now())
+
+  @@map("expenses")
+  @@schema("commercial")
+}
+
+model Campaign {
+  id        String         @id @default(cuid())
+  name      String
+  channel   String
+  budget    Decimal?       @db.Decimal(14, 2)
+  status    CampaignStatus @default(PLANNED)
+  startDate DateTime?
+  endDate   DateTime?
+  metrics   Json?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@map("campaigns")
+  @@schema("commercial")
 }
 
 // ---------------------------------------------------------------------------
-// EXECUÇÃO: PROJETOS & TAREFAS
+// DELIVERY — projetos, tarefas, arquivos de entrega
 // ---------------------------------------------------------------------------
 
 model Project {
@@ -359,12 +539,16 @@ model Project {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  tasks    Task[]
-  invoices Invoice[]
-  expenses Expense[]
+  tasks             Task[]
+  invoices          Invoice[]
+  expenses          Expense[]
+  developmentEvents DevelopmentEvent[]
+  developmentLogs   DevelopmentLog[]
+  focusSessions     FocusSession[]
+  roadmaps          Roadmap[]
 
   @@map("projects")
-  @@schema("operational")
+  @@schema("delivery")
 }
 
 model Task {
@@ -382,91 +566,14 @@ model Task {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
+  developmentEvents    DevelopmentEvent[]
+  developmentLogs      DevelopmentLog[]
+  focusSessions        FocusSession[]
+  developmentDecisions DevelopmentDecision[]
+
   @@map("tasks")
-  @@schema("operational")
+  @@schema("delivery")
 }
-
-// ---------------------------------------------------------------------------
-// FINANCEIRO: FATURAS, PAGAMENTOS, DESPESAS
-// ---------------------------------------------------------------------------
-
-model Invoice {
-  id        String        @id @default(cuid())
-  number    String        @unique
-  clientId  String
-  client    Client        @relation(fields: [clientId], references: [id])
-  projectId String?
-  project   Project?      @relation(fields: [projectId], references: [id])
-  items     Json // [{ description, quantity, unitPrice }]
-  subtotal  Decimal       @db.Decimal(14, 2)
-  tax       Decimal       @default(0) @db.Decimal(14, 2)
-  total     Decimal       @db.Decimal(14, 2)
-  status    InvoiceStatus @default(DRAFT)
-  dueDate   DateTime?
-  paidAt    DateTime?
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-
-  payments Payment[]
-
-  @@map("invoices")
-  @@schema("operational")
-}
-
-model Payment {
-  id        String        @id @default(cuid())
-  invoiceId String
-  invoice   Invoice       @relation(fields: [invoiceId], references: [id])
-  amount    Decimal       @db.Decimal(14, 2)
-  method    PaymentMethod
-  status    PaymentStatus @default(PENDING)
-  reference String?
-  paidAt    DateTime?
-  createdAt DateTime      @default(now())
-
-  @@map("payments")
-  @@schema("operational")
-}
-
-model Expense {
-  id          String          @id @default(cuid())
-  category    ExpenseCategory
-  description String
-  amount      Decimal         @db.Decimal(14, 2)
-  date        DateTime        @default(now())
-  projectId   String?
-  project     Project?        @relation(fields: [projectId], references: [id])
-  createdById String?
-  createdBy   User?           @relation("ExpenseCreator", fields: [createdById], references: [id])
-  createdAt   DateTime        @default(now())
-
-  @@map("expenses")
-  @@schema("operational")
-}
-
-// ---------------------------------------------------------------------------
-// MARKETING
-// ---------------------------------------------------------------------------
-
-model Campaign {
-  id        String         @id @default(cuid())
-  name      String
-  channel   String // email, social, ads, referral...
-  budget    Decimal?       @db.Decimal(14, 2)
-  status    CampaignStatus @default(PLANNED)
-  startDate DateTime?
-  endDate   DateTime?
-  metrics   Json? // { impressions, clicks, leads, conversions }
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-
-  @@map("campaigns")
-  @@schema("operational")
-}
-
-// ---------------------------------------------------------------------------
-// ARQUIVOS, ATIVIDADES & NOTIFICAÇÕES
-// ---------------------------------------------------------------------------
 
 model FileAsset {
   id           String   @id @default(cuid())
@@ -474,64 +581,212 @@ model FileAsset {
   url          String
   mimeType     String
   size         Int
-  entityType   String // Client, Project, Proposal, Contract...
+  entityType   String
   entityId     String
   uploadedById String?
   uploadedBy   User?    @relation("FileUploader", fields: [uploadedById], references: [id])
   createdAt    DateTime @default(now())
 
   @@index([entityType, entityId])
-  @@map("files")
-  @@schema("operational")
-}
-
-model Activity {
-  id          String   @id @default(cuid())
-  type        String // lead.created, proposal.sent, invoice.paid...
-  description String
-  entityType  String
-  entityId    String
-  userId      String?
-  user        User?    @relation("ActivityUser", fields: [userId], references: [id])
-  clientId    String?
-  client      Client?  @relation("ActivityClient", fields: [clientId], references: [id])
-  metadata    Json?
-  createdAt   DateTime @default(now())
-
-  @@index([entityType, entityId])
-  @@map("activities")
-  @@schema("operational")
-}
-
-model Notification {
-  id        String           @id @default(cuid())
-  userId    String
-  user      User             @relation(fields: [userId], references: [id])
-  type      NotificationType @default(INFO)
-  title     String
-  message   String
-  link      String?
-  read      Boolean          @default(false)
-  createdAt DateTime         @default(now())
-
-  @@map("notifications")
-  @@schema("operational")
+  @@map("project_files")
+  @@schema("delivery")
 }
 
 // ---------------------------------------------------------------------------
-// EVENT SYSTEM (Outbox pattern — mesmo princípio usado no Evolure Intelligence)
+// DELIVERY / DEVELOPMENT — Development Lab (planeamento, execução, atividade)
 // ---------------------------------------------------------------------------
 
-model Outbox {
-  id          String       @id @default(cuid())
-  eventType   String // client.created, lead.created, invoice.paid...
-  payload     Json
-  status      OutboxStatus @default(PENDING)
-  attempts    Int          @default(0)
-  createdAt   DateTime     @default(now())
-  processedAt DateTime?
+model Objective {
+  id          String          @id @default(cuid())
+  title       String
+  description String?
+  status      ObjectiveStatus @default(ACTIVE)
+  targetDate  DateTime?
+  ownerId     String?
+  owner       User?           @relation("ObjectiveOwner", fields: [ownerId], references: [id])
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
-  @@index([status])
-  @@map("outbox")
-  @@schema("operational")
+  roadmaps Roadmap[]
+
+  @@map("objectives")
+  @@schema("development")
+}
+
+model Roadmap {
+  id          String     @id @default(cuid())
+  objectiveId String?
+  objective   Objective? @relation(fields: [objectiveId], references: [id])
+  projectId   String?
+  project     Project?   @relation(fields: [projectId], references: [id])
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  weeklyPlans WeeklyPlan[]
+
+  @@map("roadmaps")
+  @@schema("development")
+}
+
+model WeeklyPlan {
+  id         String     @id @default(cuid())
+  roadmapId  String?
+  roadmap    Roadmap?   @relation(fields: [roadmapId], references: [id])
+  weekStart  DateTime
+  weekEnd    DateTime
+  goals      Json // lista de metas da semana
+  status     PlanStatus @default(PLANNED)
+  reviewNote String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  dailyPlans DailyPlan[]
+
+  @@map("weekly_plans")
+  @@schema("development")
+}
+
+model DailyPlan {
+  id           String      @id @default(cuid())
+  weeklyPlanId String?
+  weeklyPlan   WeeklyPlan? @relation(fields: [weeklyPlanId], references: [id])
+  date         DateTime
+  priorities   Json // lista ordenada de prioridades do dia
+  status       PlanStatus  @default(PLANNED)
+  reviewNote   String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@map("daily_plans")
+  @@schema("development")
+}
+
+/// Camada intermediária de eventos: Git, IDE, Terminal, Planner e CI/CD
+/// nunca escrevem diretamente em DevelopmentLog ou FocusSession — todos
+/// emitem um DevelopmentEvent, que é distribuído para os processors.
+model DevelopmentEvent {
+  id         String                 @id @default(cuid())
+  source     DevelopmentEventSource
+  eventType  DevelopmentEventType
+  userId     String?
+  user       User?                  @relation(fields: [userId], references: [id])
+  projectId  String?
+  project    Project?               @relation(fields: [projectId], references: [id])
+  taskId     String?
+  task       Task?                  @relation(fields: [taskId], references: [id])
+  externalId String? // ex: SHA do commit, ID do PR
+  metadata   Json?
+  timestamp  DateTime               @default(now())
+  createdAt  DateTime               @default(now())
+
+  developmentLogs DevelopmentLog[]
+
+  @@index([source, eventType])
+  @@index([projectId])
+  @@map("development_events")
+  @@schema("development")
+}
+
+/// Evidência de atividade — NÃO representa horas trabalhadas (isso é
+/// responsabilidade do TimeEntry, que continua independente).
+model DevelopmentLog {
+  id            String            @id @default(cuid())
+  userId        String?
+  user          User?             @relation(fields: [userId], references: [id])
+  projectId     String?
+  project       Project?          @relation(fields: [projectId], references: [id])
+  taskId        String?
+  task          Task?             @relation(fields: [taskId], references: [id])
+  sourceEventId String?
+  sourceEvent   DevelopmentEvent? @relation(fields: [sourceEventId], references: [id])
+  activityType  String
+  description   String
+  confidence    Float             @default(1.0)
+  timestamp     DateTime          @default(now())
+  metadata      Json?
+  createdAt     DateTime          @default(now())
+
+  @@index([projectId])
+  @@map("development_logs")
+  @@schema("development")
+}
+
+/// Inferida a partir de múltiplos sinais (Git + IDE + Terminal + Planner),
+/// não depende exclusivamente de commits.
+model FocusSession {
+  id            String    @id @default(cuid())
+  userId        String?
+  user          User?     @relation(fields: [userId], references: [id])
+  projectId     String?
+  project       Project?  @relation(fields: [projectId], references: [id])
+  taskId        String?
+  task          Task?     @relation(fields: [taskId], references: [id])
+  startedAt     DateTime
+  endedAt       DateTime?
+  durationSecs  Int?
+  activityScore Float?
+  confidence    Float     @default(1.0)
+  sourceEvents  String[]  @default([]) // ids de DevelopmentEvent
+  inferred      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+
+  interruptions Interruption[]
+
+  @@index([projectId])
+  @@map("focus_sessions")
+  @@schema("development")
+}
+
+model Interruption {
+  id             String             @id @default(cuid())
+  focusSessionId String?
+  focusSession   FocusSession?      @relation(fields: [focusSessionId], references: [id])
+  source         InterruptionSource @default(UNKNOWN)
+  reason         String?
+  startedAt      DateTime
+  endedAt        DateTime?
+  createdAt      DateTime           @default(now())
+
+  @@map("interruptions")
+  @@schema("development")
+}
+
+/// Decisões técnicas capturadas via CLI/shortcut (ex: `/decision ...`),
+/// sempre pertencentes ao WebStudio Development Lab.
+model DevelopmentDecision {
+  id            String   @id @default(cuid())
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id])
+  relatedTaskId String?
+  relatedTask   Task?    @relation(fields: [relatedTaskId], references: [id])
+  context       String?
+  decision      String
+  reason        String?
+  alternatives  Json? // lista de alternativas consideradas
+  impact        String?
+  createdAt     DateTime @default(now())
+
+  @@map("development_decisions")
+  @@schema("development")
+}
+
+/// Agregação diária/leve de atividade de desenvolvimento por utilizador —
+/// alimentada pelos processors a partir de DevelopmentEvent, usada como
+/// fonte rápida para o Analytics Engine do Labs sem recalcular do zero.
+model DevelopmentActivity {
+  id         String   @id @default(cuid())
+  userId     String?
+  date       DateTime
+  eventCount Int      @default(0)
+  focusSecs  Int      @default(0)
+  summary    Json?
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, date])
+  @@map("development_activity")
+  @@schema("development")
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendMetaEvent } from '../../lib/metaCAPI';
+import { sendMetaEvent } from '@/app/lib/metaCAPI';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();

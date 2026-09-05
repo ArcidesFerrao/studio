@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { ok, fail, unauthorized, withErrorHandling } from "@/lib/api-response";
-import { readPendingEvents, markEventsProcessed } from "@/lib/events/outbox";
-import { verifyApiKey } from "@/lib/api-key-auth";
+import { ok, unauthorized, withErrorHandling } from "@/app/lib/api-response";
+import { readPendingEvents, markEventsProcessed } from "@/app/lib/events/outbox";
+import { verifyApiKey } from "@/app/lib/api-key-auth";
 
 /**
  * Rota consumida pelo WebstudioConnector do Evolure Intelligence, no mesmo

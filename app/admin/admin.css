@@ -1,0 +1,515 @@
+/* ═══════════════════════════════════
+   EVOLURE WEB STUDIO — admin (interno)
+   Reaproveita 100% as variáveis de webstudio.css.
+   Nenhuma cor nova é introduzida aqui.
+   ═══════════════════════════════════ */
+
+.ws-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── sidebar ── */
+.ws-sidebar {
+  width: 252px;
+  flex-shrink: 0;
+  background: var(--ws-card);
+  border-right: 1px solid var(--ws-border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.ws-sidebar-brand {
+  padding: 1.4rem 1.3rem 1.1rem;
+  border-bottom: 1px solid var(--ws-border);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ws-sidebar-brand-mark {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ws-green);
+  box-shadow: 0 0 0 4px var(--ws-green-glow);
+  flex-shrink: 0;
+}
+
+.ws-sidebar-brand-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.98rem;
+  letter-spacing: -0.01em;
+}
+
+.ws-sidebar-brand-sub {
+  font-size: 0.66rem;
+  color: var(--ws-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ws-sidebar-scroll {
+  flex: 1;
+  padding: 1rem 0.7rem;
+}
+
+.ws-sidebar-group + .ws-sidebar-group {
+  margin-top: 1.3rem;
+}
+
+.ws-sidebar-group-label {
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ws-dim);
+  padding: 0 0.7rem;
+  margin-bottom: 0.35rem;
+}
+
+.ws-sidebar-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: var(--ws-muted);
+  text-decoration: none;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.ws-sidebar-link:hover {
+  color: var(--ws-fg);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ws-sidebar-link.active {
+  color: var(--ws-green-hi);
+  background: var(--ws-green-glow);
+}
+
+.ws-sidebar-link-count {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: var(--ws-dim);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 100px;
+  padding: 0.05rem 0.45rem;
+}
+
+.ws-sidebar-link.active .ws-sidebar-link-count {
+  color: var(--ws-green-hi);
+  background: rgba(29, 158, 117, 0.16);
+}
+
+.ws-sidebar-foot {
+  padding: 0.9rem 1rem;
+  border-top: 1px solid var(--ws-border);
+}
+
+/* ── topbar + content ── */
+.ws-main {
+  flex: 1;
+  min-width: 0;
+  background: var(--ws-bg);
+}
+
+.ws-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(14, 12, 20, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--ws-border);
+  padding: 1rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ws-topbar-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+.ws-topbar-desc {
+  font-size: 0.78rem;
+  color: var(--ws-muted);
+  margin-top: 0.1rem;
+}
+
+.ws-content {
+  padding: 1.75rem;
+}
+
+/* ── cards ── */
+.ws-card-block {
+  background: var(--ws-card);
+  border: 1px solid var(--ws-border);
+  border-radius: 14px;
+}
+
+.ws-stat-card {
+  background: var(--ws-card);
+  border: 1px solid var(--ws-border);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+}
+
+.ws-stat-val {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.ws-stat-lbl {
+  font-size: 0.72rem;
+  color: var(--ws-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0.4rem;
+}
+
+/* ── funnel (dashboard signature element) ── */
+.ws-funnel {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: var(--ws-card);
+  border: 1px solid var(--ws-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.ws-funnel-stage {
+  flex: 1;
+  padding: 1.1rem 1.3rem;
+  position: relative;
+}
+
+.ws-funnel-stage + .ws-funnel-stage {
+  border-left: 1px solid var(--ws-border);
+}
+
+.ws-funnel-stage::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--ws-green);
+  box-shadow: 0 0 10px 1px var(--ws-green-glow);
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.ws-funnel-num {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--ws-fg);
+  line-height: 1;
+}
+
+.ws-funnel-lbl {
+  font-size: 0.72rem;
+  color: var(--ws-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.35rem;
+}
+
+/* ── table ── */
+.ws-table-wrap {
+  overflow-x: auto;
+}
+
+.ws-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.ws-table th {
+  text-align: left;
+  color: var(--ws-muted);
+  font-weight: 600;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--ws-border);
+  white-space: nowrap;
+}
+
+.ws-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--ws-border);
+  vertical-align: middle;
+}
+
+.ws-table tbody tr {
+  transition: background 0.12s;
+}
+
+.ws-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ws-table-mono {
+  font-family: ui-monospace, "SF Mono", monospace;
+  font-size: 0.78rem;
+  color: var(--ws-muted);
+}
+
+.ws-table-empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--ws-muted);
+  font-size: 0.85rem;
+}
+
+/* ── pills de estado (reusa exatamente as cores nomeadas já existentes) ── */
+.ws-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.22rem 0.6rem;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.ws-pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.ws-pill-green {
+  color: var(--ws-green-hi);
+  background: var(--ws-green-glow);
+}
+.ws-pill-amber {
+  color: var(--ws-amber);
+  background: rgba(232, 156, 53, 0.14);
+}
+.ws-pill-blue {
+  color: var(--ws-blue);
+  background: rgba(74, 143, 212, 0.14);
+}
+.ws-pill-purple {
+  color: var(--ws-purple);
+  background: rgba(139, 127, 232, 0.14);
+}
+.ws-pill-red {
+  color: var(--ws-red);
+  background: rgba(220, 85, 85, 0.14);
+}
+.ws-pill-muted {
+  color: var(--ws-muted);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ── botão de ícone / ação pequena ── */
+.ws-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  border: 1px solid var(--ws-border);
+  background: transparent;
+  color: var(--ws-muted);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
+}
+.ws-icon-btn:hover {
+  color: var(--ws-fg);
+  border-color: var(--ws-border2);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ws-btn-sm {
+  padding: 0.45rem 0.9rem !important;
+  font-size: 0.78rem !important;
+  border-radius: 7px !important;
+}
+
+.ws-btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  color: var(--ws-red);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 7px;
+  border: 1px solid rgba(220, 85, 85, 0.35);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.ws-btn-danger:hover {
+  background: rgba(220, 85, 85, 0.1);
+}
+
+/* ── formulário (form fields dentro de modais) ── */
+.ws-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ws-field-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ws-muted);
+}
+
+.ws-field-error {
+  font-size: 0.72rem;
+  color: var(--ws-red);
+}
+
+textarea.ws-input {
+  resize: vertical;
+  min-height: 5rem;
+  font-family: var(--font-body);
+}
+
+/* ── modal ── */
+.ws-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 3, 7, 0.7);
+  backdrop-filter: blur(3px);
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 4vh 1rem;
+  overflow-y: auto;
+}
+
+.ws-modal {
+  width: 100%;
+  max-width: 560px;
+  background: var(--ws-card2);
+  border: 1px solid var(--ws-border2);
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.ws-modal-head {
+  padding: 1.2rem 1.4rem;
+  border-bottom: 1px solid var(--ws-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ws-modal-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.ws-modal-body {
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+.ws-modal-foot {
+  padding: 1.1rem 1.4rem;
+  border-top: 1px solid var(--ws-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.ws-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--ws-muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.2rem;
+}
+.ws-close-btn:hover {
+  color: var(--ws-fg);
+}
+
+/* ── feed de atividades ── */
+.ws-feed-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--ws-border);
+}
+.ws-feed-item:last-child {
+  border-bottom: none;
+}
+.ws-feed-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ws-green);
+  margin-top: 0.4rem;
+  flex-shrink: 0;
+}
+.ws-feed-text {
+  font-size: 0.85rem;
+  color: var(--ws-fg);
+}
+.ws-feed-time {
+  font-size: 0.72rem;
+  color: var(--ws-dim);
+  margin-top: 0.15rem;
+}
+
+/* ── utilitários ── */
+.ws-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.ws-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}

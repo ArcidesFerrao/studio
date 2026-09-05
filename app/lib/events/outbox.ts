@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db";
+import { prisma } from "@/app/lib/db";
 
 /** Lê até `limit` eventos pendentes, mais antigos primeiro. */
 export async function readPendingEvents(limit = 100) {

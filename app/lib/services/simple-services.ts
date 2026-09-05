@@ -1,6 +1,5 @@
-import { prisma } from "@/lib/db";
-import { publishEvent } from "@/lib/events/publisher";
-import { AppError } from "@/lib/api-response";
+import { prisma } from "@/app/lib/db";
+import { AppError } from "@/app/lib/api-response";
 import bcrypt from "bcryptjs";
 import { createCrudService } from "./crud-factory";
 

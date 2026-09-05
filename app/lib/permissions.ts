@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
-import { authOptions, type SessionUser } from "@/lib/auth";
-import { AppError } from "@/lib/api-response";
+import { authOptions, type SessionUser } from "@/app/lib/auth";
+import { AppError } from "@/app/lib/api-response";
 
 /**
  * Recupera o utilizador autenticado dentro de um Route Handler.

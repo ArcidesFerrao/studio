@@ -1,8 +1,8 @@
-import { prisma } from "@/lib/db";
-import { publishEvent } from "@/lib/events/publisher";
-import { AppError } from "@/lib/api-response";
+import { prisma } from "@/app/lib/db";
+import { publishEvent } from "@/app/lib/events/publisher";
+import { AppError } from "@/app/lib/api-response";
 import type { z } from "zod";
-import type { contractSchema, contractUpdateSchema } from "@/lib/validators";
+import type { contractSchema, contractUpdateSchema } from "@/app/lib/validators";
 
 type ContractInput = z.infer<typeof contractSchema>;
 type ContractUpdateInput = z.infer<typeof contractUpdateSchema>;

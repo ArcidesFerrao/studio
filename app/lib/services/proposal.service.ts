@@ -1,8 +1,8 @@
-import { prisma } from "@/lib/db";
-import { publishEvent } from "@/lib/events/publisher";
-import { AppError } from "@/lib/api-response";
+import { prisma } from "@/app/lib/db";
+import { publishEvent } from "@/app/lib/events/publisher";
+import { AppError } from "@/app/lib/api-response";
 import type { z } from "zod";
-import type { proposalSchema } from "@/lib/validators";
+import type { proposalSchema } from "@/app/lib/validators";
 
 type ProposalInput = z.infer<typeof proposalSchema>;
 

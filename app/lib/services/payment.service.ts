@@ -1,9 +1,9 @@
-import { prisma } from "@/lib/db";
-import { publishEvent } from "@/lib/events/publisher";
-import { AppError } from "@/lib/api-response";
+import { prisma } from "@/app/lib/db";
+import { publishEvent } from "@/app/lib/events/publisher";
+import { AppError } from "@/app/lib/api-response";
 import { invoiceService } from "./invoice.service";
 import type { z } from "zod";
-import type { paymentSchema } from "@/lib/validators";
+import type { paymentSchema } from "@/app/lib/validators";
 
 type PaymentInput = z.infer<typeof paymentSchema>;
 
