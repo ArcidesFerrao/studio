@@ -48,7 +48,7 @@ export default function CampaignsPage() {
       <CrudPage<Campaign>
         title="Marketing"
         description="Campanhas de aquisição — canais, orçamento e estado."
-        endpoint="/api/campaigns"
+        endpoint="/api/commercial/campaigns"
         columns={columns}
         fields={fields}
         createLabel="+ Nova campanha"

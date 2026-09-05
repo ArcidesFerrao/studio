@@ -43,7 +43,7 @@ export function UsersClient() {
     <CrudPage<AppUser>
       title="Utilizadores"
       description="Contas da equipa com acesso ao painel interno."
-      endpoint="/api/users"
+      endpoint="/api/shared/users"
       columns={columns}
       fields={CREATE_FIELDS}
       editFields={EDIT_FIELDS}

@@ -22,7 +22,7 @@ const columns: Column<Payment>[] = [
 ];
 
 export default function PaymentsPage() {
-  const { items, page, pagination, setPage, loading } = usePaginatedList<Payment>("/api/payments");
+  const { items, page, pagination, setPage, loading } = usePaginatedList<Payment>("/api/commercial/payments");
 
   return (
     <div className="ws-content">

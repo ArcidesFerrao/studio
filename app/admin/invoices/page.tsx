@@ -47,7 +47,7 @@ const PAYMENT_METHODS = [
 
 export default function InvoicesPage() {
   const { items, page, pagination, setPage, loading, reload } =
-    usePaginatedList<Invoice>("/api/invoices");
+    usePaginatedList<Invoice>("/api/commercial/invoices");
   const [clients, setClients] = useState<ClientOption[]>([]);
 
   const [createOpen, setCreateOpen] = useState(false);
@@ -67,7 +67,7 @@ export default function InvoicesPage() {
   useEffect(() => {
     if (createOpen && clients.length === 0) {
       api
-        .get<{ items: ClientOption[] }>("/api/clients?pageSize=100")
+        .get<{ items: ClientOption[] }>("/api/shared/clients?pageSize=100")
         .then((r) => setClients(r.items))
         .catch(() => {});
     }
@@ -83,7 +83,7 @@ export default function InvoicesPage() {
     setSaving(true);
     setError(null);
     try {
-      await api.post("/api/invoices", {
+      await api.post("/api/commercial/invoices", {
         clientId,
         dueDate: dueDate || undefined,
         items: lineItems.filter((i) => i.description),
@@ -131,7 +131,7 @@ export default function InvoicesPage() {
     setPaySaving(true);
     setPayError(null);
     try {
-      await api.post("/api/payments", {
+      await api.post("/api/commercial/payments", {
         invoiceId: payTarget.id,
         amount: payAmount,
         method: payMethod,

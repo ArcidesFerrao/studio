@@ -28,7 +28,7 @@ const fields: FormFieldConfig[] = [
     label: "Projeto",
     type: "select",
     required: true,
-    optionsEndpoint: "/api/projects?pageSize=100",
+    optionsEndpoint: "/api/delivery/projects?pageSize=100",
     optionsMap: (p) => ({ value: p.id, label: p.name }),
   },
   { name: "title", label: "Título", type: "text", required: true },
@@ -48,7 +48,7 @@ const fields: FormFieldConfig[] = [
     name: "assigneeId",
     label: "Responsável",
     type: "select",
-    optionsEndpoint: "/api/users?pageSize=100",
+    optionsEndpoint: "/api/shared/users?pageSize=100",
     optionsMap: (u) => ({ value: u.id, label: u.name }),
   },
   { name: "dueDate", label: "Prazo", type: "date" },
@@ -71,7 +71,7 @@ export default function TasksPage() {
       <CrudPage<Task>
         title="Tarefas"
         description="Todas as tarefas, entre projetos. Para o quadro por projeto, abre o projeto."
-        endpoint="/api/tasks"
+        endpoint="/api/delivery/tasks"
         columns={columns}
         fields={fields}
         canDelete={false}

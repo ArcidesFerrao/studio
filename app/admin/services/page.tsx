@@ -39,7 +39,7 @@ export default function ServicesPage() {
       <CrudPage<ServiceItem>
         title="Catálogo de serviços"
         description="Serviços oferecidos — exibidos publicamente na landing page (apenas os ativos)."
-        endpoint="/api/services"
+        endpoint="/api/commercial/services"
         columns={columns}
         fields={fields}
         createLabel="+ Novo serviço"

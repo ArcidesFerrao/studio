@@ -30,7 +30,7 @@ const fields: FormFieldConfig[] = [
     label: "Cliente",
     type: "select",
     required: true,
-    optionsEndpoint: "/api/clients?pageSize=100",
+    optionsEndpoint: "/api/shared/clients?pageSize=100",
     optionsMap: (c) => ({ value: c.id, label: c.name }),
   },
   { name: "title", label: "Título", type: "text", required: true },
@@ -59,7 +59,7 @@ export default function ContractsPage() {
       <CrudPage<Contract>
         title="Contratos"
         description="Gerados automaticamente ao aceitar uma proposta, ou criados diretamente."
-        endpoint="/api/contracts"
+        endpoint="/api/commercial/contracts"
         columns={columns}
         fields={fields}
         createLabel="+ Novo contrato"

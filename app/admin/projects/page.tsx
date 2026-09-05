@@ -25,14 +25,14 @@ const FIELDS: FormFieldConfig[] = [
     label: "Cliente",
     type: "select",
     required: true,
-    optionsEndpoint: "/api/clients?pageSize=100",
+    optionsEndpoint: "/api/shared/clients?pageSize=100",
     optionsMap: (c) => ({ value: c.id, label: c.name }),
   },
   {
     name: "contractId",
     label: "Contrato (opcional)",
     type: "select",
-    optionsEndpoint: "/api/contracts?pageSize=100",
+    optionsEndpoint: "/api/commercial/contracts?pageSize=100",
     optionsMap: (c) => ({ value: c.id, label: c.title }),
   },
   { name: "name", label: "Nome do projeto", type: "text", required: true },
@@ -44,14 +44,14 @@ const FIELDS: FormFieldConfig[] = [
     name: "ownerId",
     label: "Responsável",
     type: "select",
-    optionsEndpoint: "/api/users?pageSize=100",
+    optionsEndpoint: "/api/shared/users?pageSize=100",
     optionsMap: (u) => ({ value: u.id, label: u.name }),
   },
 ];
 
 export default function ProjectsPage() {
   const { items, page, pagination, setPage, loading, reload } =
-    usePaginatedList<Project>("/api/projects");
+    usePaginatedList<Project>("/api/delivery/projects");
   const [modalOpen, setModalOpen] = useState(false);
   const [values, setValues] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState(false);
@@ -62,7 +62,7 @@ export default function ProjectsPage() {
     setSaving(true);
     setError(null);
     try {
-      await api.post("/api/projects", values);
+      await api.post("/api/delivery/projects", values);
       setModalOpen(false);
       setValues({});
       reload();

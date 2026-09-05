@@ -16,7 +16,7 @@ interface Notification {
 
 export default function NotificationsPage() {
   const { items, loading, reload } =
-    usePaginatedList<Notification>("/api/notifications");
+    usePaginatedList<Notification>("/api/shared/notifications");
 
   async function markRead(id: string) {
     try {

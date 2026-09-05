@@ -41,7 +41,7 @@ const emptyItem: LineItem = { description: "", quantity: 1, unitPrice: 0 };
 
 export default function ProposalsPage() {
   const { items, page, pagination, setPage, loading, reload } =
-    usePaginatedList<Proposal>("/api/proposals");
+    usePaginatedList<Proposal>("/api/commercial/proposals");
   const [clients, setClients] = useState<ClientOption[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -56,7 +56,7 @@ export default function ProposalsPage() {
   useEffect(() => {
     if (modalOpen && clients.length === 0) {
       api
-        .get<{ items: ClientOption[] }>("/api/clients?pageSize=100")
+        .get<{ items: ClientOption[] }>("/api/shared/clients?pageSize=100")
         .then((r) => setClients(r.items))
         .catch(() => {});
     }
@@ -81,7 +81,7 @@ export default function ProposalsPage() {
     setSaving(true);
     setError(null);
     try {
-      await api.post("/api/proposals", {
+      await api.post("/api/commercial/proposals", {
         clientId,
         title,
         description: description || undefined,

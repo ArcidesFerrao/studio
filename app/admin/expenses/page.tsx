@@ -41,7 +41,7 @@ const fields: FormFieldConfig[] = [
     name: "projectId",
     label: "Projeto (opcional)",
     type: "select",
-    optionsEndpoint: "/api/projects?pageSize=100",
+    optionsEndpoint: "/api/delivery/projects?pageSize=100",
     optionsMap: (p) => ({ value: p.id, label: p.name }),
   },
 ];
@@ -52,7 +52,7 @@ export default function ExpensesPage() {
       <CrudPage<Expense>
         title="Despesas"
         description="Custos operacionais — software, equipamento, prestadores externos."
-        endpoint="/api/expenses"
+        endpoint="/api/commercial/expenses"
         columns={columns}
         fields={fields}
         createLabel="+ Nova despesa"

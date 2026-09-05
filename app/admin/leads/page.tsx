@@ -50,7 +50,7 @@ const EDIT_FIELDS: FormFieldConfig[] = [
 
 export default function LeadsPage() {
   const { items, page, pagination, setPage, loading, reload } =
-    usePaginatedList<Lead>("/api/leads");
+    usePaginatedList<Lead>("/api/commercial/leads");
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Lead | null>(null);
   const [values, setValues] = useState<Record<string, any>>({});
@@ -79,7 +79,7 @@ export default function LeadsPage() {
       if (editing) {
         await api.patch(`/api/leads/${editing.id}`, values);
       } else {
-        await api.post("/api/leads", values);
+        await api.post("/api/commercial/leads", values);
       }
       setModalOpen(false);
       reload();

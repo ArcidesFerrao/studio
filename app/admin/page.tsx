@@ -22,7 +22,7 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     api
-      .get<DashboardData>("/api/dashboard")
+      .get<DashboardData>("/api/reporting/dashboard")
       .then(setData)
       .catch(() => {});
   }, []);

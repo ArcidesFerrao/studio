@@ -95,7 +95,7 @@ export default function ProjectDetailPage({
     setSaving(true);
     setError(null);
     try {
-      await api.post("/api/tasks", {
+      await api.post("/api/delivery/tasks", {
         projectId: id,
         title: taskTitle,
         priority: taskPriority,

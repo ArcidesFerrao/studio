@@ -20,7 +20,7 @@ const columns: Column<Activity>[] = [
 ];
 
 export default function ActivitiesPage() {
-  const { items, page, pagination, setPage, loading } = usePaginatedList<Activity>("/api/activities");
+  const { items, page, pagination, setPage, loading } = usePaginatedList<Activity>("/api/shared/activities");
 
   return (
     <div className="ws-content">

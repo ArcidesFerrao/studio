@@ -35,7 +35,7 @@ export default function ClientsPage() {
       <CrudPage<Client>
         title="Clientes"
         description="Todos os clientes ativos e históricos."
-        endpoint="/api/clients"
+        endpoint="/api/shared/clients"
         columns={columns}
         fields={fields}
         createLabel="+ Novo cliente"

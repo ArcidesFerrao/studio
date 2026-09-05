@@ -2,17 +2,17 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 // Rotas que não exigem sessão de utilizador:
-// - /api/auth/*        -> NextAuth (login)
-// - /api/integration/*  -> autentica por API key própria (verifyApiKey), não sessão
-// - POST /api/leads     -> formulário público de contacto/orçamento do site
-// - GET  /api/services   -> catálogo de serviços exibido na landing page
+// - /api/auth/*                 -> NextAuth (login)
+// - /api/integration/*          -> autentica por API key própria (verifyApiKey), não sessão
+// - POST /api/commercial/leads  -> formulário público de contacto/orçamento do site
+// - GET  /api/commercial/services -> catálogo de serviços exibido na landing page
 const PUBLIC_PREFIXES = ["/api/auth", "/api/integration"];
 
 function isPublicRoute(pathname: string, method: string) {
   if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) return true;
-  if (pathname === "/api/leads" && method === "POST") return true;
-  if (pathname === "/api/services" && method === "GET") return true;
-  if (/^\/api\/services\/[^/]+$/.test(pathname) && method === "GET") return true;
+  if (pathname === "/api/commercial/leads" && method === "POST") return true;
+  if (pathname === "/api/commercial/services" && method === "GET") return true;
+  if (/^\/api\/commercial\/services\/[^/]+$/.test(pathname) && method === "GET") return true;
   return false;
 }
 
