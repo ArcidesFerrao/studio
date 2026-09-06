@@ -58,6 +58,17 @@ enum LeadStatus {
   @@schema("commercial")
 }
 
+enum OpportunityStage {
+  QUALIFYING
+  NEEDS_ANALYSIS
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+
+  @@schema("commercial")
+}
+
 enum ProposalStatus {
   DRAFT
   SENT
@@ -157,6 +168,39 @@ enum TaskPriority {
   @@schema("delivery")
 }
 
+enum MilestoneStatus {
+  PLANNED
+  IN_PROGRESS
+  DONE
+  MISSED
+
+  @@schema("delivery")
+}
+
+enum SprintStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+
+  @@schema("delivery")
+}
+
+enum SubtaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+
+  @@schema("delivery")
+}
+
+enum BlockerStatus {
+  OPEN
+  RESOLVED
+
+  @@schema("delivery")
+}
+
 enum ObjectiveStatus {
   ACTIVE
   ACHIEVED
@@ -234,16 +278,19 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  leadsOwned       Lead[]         @relation("LeadOwner")
-  proposalsCreated Proposal[]     @relation("ProposalCreator")
-  projectsOwned    Project[]      @relation("ProjectOwner")
-  tasksAssigned    Task[]         @relation("TaskAssignee")
-  expensesCreated  Expense[]      @relation("ExpenseCreator")
-  filesUploaded    FileAsset[]    @relation("FileUploader")
-  notifications    Notification[]
-  apiKeys          ApiKey[]
-  activities       Activity[]     @relation("ActivityUser")
-  auditLogs        AuditLog[]     @relation("AuditActor")
+  leadsOwned         Lead[]         @relation("LeadOwner")
+  opportunitiesOwned Opportunity[]  @relation("OpportunityOwner")
+  proposalsCreated   Proposal[]     @relation("ProposalCreator")
+  projectsOwned      Project[]      @relation("ProjectOwner")
+  tasksAssigned      Task[]         @relation("TaskAssignee")
+  expensesCreated    Expense[]      @relation("ExpenseCreator")
+  filesUploaded      FileAsset[]    @relation("FileUploader")
+  notifications      Notification[]
+  apiKeys            ApiKey[]
+  activities         Activity[]     @relation("ActivityUser")
+  auditLogs          AuditLog[]     @relation("AuditActor")
+  blockersRaised     Blocker[]      @relation("BlockerRaisedBy")
+  timeEntries        TimeEntry[]    @relation("TimeEntryUser")
 
   developmentEvents    DevelopmentEvent[]
   developmentLogs      DevelopmentLog[]
@@ -379,9 +426,31 @@ model Lead {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  proposals Proposal[]
+  proposals     Proposal[]
+  opportunities Opportunity[]
 
   @@map("leads")
+  @@schema("commercial")
+}
+
+/// Oportunidade qualificada nascida de um Lead — acompanha estágio e valor
+/// estimado até virar Proposal/Contract (ou ser perdida).
+model Opportunity {
+  id                String           @id @default(cuid())
+  leadId            String?
+  lead              Lead?            @relation(fields: [leadId], references: [id])
+  title             String
+  estimatedValue    Decimal?         @db.Decimal(14, 2)
+  probability       Int              @default(50) // 0-100
+  stage             OpportunityStage @default(QUALIFYING)
+  expectedCloseDate DateTime?
+  ownerId           String?
+  owner             User?            @relation("OpportunityOwner", fields: [ownerId], references: [id])
+  closedAt          DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@map("opportunities")
   @@schema("commercial")
 }
 
@@ -546,6 +615,8 @@ model Project {
   developmentLogs   DevelopmentLog[]
   focusSessions     FocusSession[]
   roadmaps          Roadmap[]
+  milestones        Milestone[]
+  sprints           Sprint[]
 
   @@map("projects")
   @@schema("delivery")
@@ -555,6 +626,10 @@ model Task {
   id          String       @id @default(cuid())
   projectId   String
   project     Project      @relation(fields: [projectId], references: [id])
+  milestoneId String?
+  milestone   Milestone?   @relation(fields: [milestoneId], references: [id])
+  sprintId    String?
+  sprint      Sprint?      @relation(fields: [sprintId], references: [id])
   title       String
   description String?
   status      TaskStatus   @default(TODO)
@@ -570,8 +645,96 @@ model Task {
   developmentLogs      DevelopmentLog[]
   focusSessions        FocusSession[]
   developmentDecisions DevelopmentDecision[]
+  subtasks             Subtask[]
+  blockers             Blocker[]
+  timeEntries          TimeEntry[]
 
   @@map("tasks")
+  @@schema("delivery")
+}
+
+model Milestone {
+  id          String          @id @default(cuid())
+  projectId   String
+  project     Project         @relation(fields: [projectId], references: [id])
+  title       String
+  description String?
+  status      MilestoneStatus @default(PLANNED)
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  tasks Task[]
+
+  @@map("milestones")
+  @@schema("delivery")
+}
+
+model Sprint {
+  id        String       @id @default(cuid())
+  projectId String
+  project   Project      @relation(fields: [projectId], references: [id])
+  name      String
+  goal      String?
+  status    SprintStatus @default(PLANNED)
+  startDate DateTime?
+  endDate   DateTime?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  tasks Task[]
+
+  @@map("sprints")
+  @@schema("delivery")
+}
+
+model Subtask {
+  id          String        @id @default(cuid())
+  taskId      String
+  task        Task          @relation(fields: [taskId], references: [id])
+  title       String
+  status      SubtaskStatus @default(TODO)
+  completedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("subtasks")
+  @@schema("delivery")
+}
+
+model Blocker {
+  id          String        @id @default(cuid())
+  taskId      String
+  task        Task          @relation(fields: [taskId], references: [id])
+  description String
+  status      BlockerStatus @default(OPEN)
+  raisedById  String?
+  raisedBy    User?         @relation("BlockerRaisedBy", fields: [raisedById], references: [id])
+  raisedAt    DateTime      @default(now())
+  resolvedAt  DateTime?
+  resolution  String?
+
+  @@map("blockers")
+  @@schema("delivery")
+}
+
+/// Horas efetivamente trabalhadas, lançadas manualmente ou por timer —
+/// independente do DevelopmentLog (evidência de atividade via Git/IDE/etc.),
+/// conforme o princípio "Git != TimeEntry" da arquitetura v3.
+model TimeEntry {
+  id           String    @id @default(cuid())
+  taskId       String
+  task         Task      @relation(fields: [taskId], references: [id])
+  userId       String?
+  user         User?     @relation("TimeEntryUser", fields: [userId], references: [id])
+  startedAt    DateTime
+  endedAt      DateTime?
+  durationMins Int?
+  note         String?
+  createdAt    DateTime  @default(now())
+
+  @@map("time_entries")
   @@schema("delivery")
 }
 
