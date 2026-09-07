@@ -9,6 +9,13 @@ interface PublishOptions {
   userId?: string | null;
   clientId?: string | null;
   metadata?: Record<string, unknown>;
+  /**
+   * Quando true, não grava em `activities` (feed humano). Usado por fontes
+   * de alto volume (ex: DevelopmentEvent — um commit não deve poluir o
+   * "Atividade recente" do dashboard comercial). O outbox continua sendo
+   * gravado sempre, para o Evolure Intelligence não perder o sinal.
+   */
+  skipActivity?: boolean;
 }
 
 /**
@@ -17,7 +24,7 @@ interface PublishOptions {
  *   Evolure Intelligence vai ler e marcar como PROCESSED (mesmo padrão do
  *   pipeline ingest -> promote -> analytics já usado para a Contela).
  * - Grava em `activities`: timeline legível para a equipa dentro do próprio
- *   Webstudio (feed de atividades no dashboard).
+ *   Webstudio (feed de atividades no dashboard) — a menos que skipActivity.
  *
  * Roda dentro de uma transação para nunca perder um evento por falha parcial.
  */
@@ -38,6 +45,8 @@ export async function publishEvent(
       payload: payload as Prisma.InputJsonValue,
     },
   });
+
+  if (options.skipActivity) return;
 
   await tx.activity.create({
     data: {

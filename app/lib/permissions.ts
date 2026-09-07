@@ -1,6 +1,8 @@
 import { getServerSession } from "next-auth";
 import { authOptions, type SessionUser } from "@/app/lib/auth";
 import { AppError } from "@/app/lib/api-response";
+import { verifyApiKey } from "@/app/lib/api-key-auth";
+import type { NextRequest } from "next/server";
 
 /**
  * Recupera o utilizador autenticado dentro de um Route Handler.
@@ -33,3 +35,23 @@ export const requireAdmin = () => requireRole(["ADMIN"]);
 
 /** Atalho: equipa interna (ADMIN ou STAFF) — usado na maioria das rotas de gestão. */
 export const requireStaff = () => requireRole(["ADMIN", "STAFF"]);
+
+export type EventActor =
+  | { kind: "user"; userId: string }
+  | { kind: "api_key"; userId: string; apiKeyId: string };
+
+/**
+ * Para rotas que tanto a UI (sessão de staff) quanto fontes automatizadas
+ * (GitHub, CI/CD — via API key) podem chamar. Ex: ingestão de
+ * DevelopmentEvent. Tenta API key primeiro (é o caso mais comum para essas
+ * rotas); se não houver, cai para sessão de staff.
+ */
+export async function requireStaffOrApiKey(
+  req: NextRequest
+): Promise<EventActor> {
+  const key = await verifyApiKey(req);
+  if (key) return { kind: "api_key", userId: key.userId, apiKeyId: key.id };
+
+  const user = await requireStaff();
+  return { kind: "user", userId: user.id };
+}

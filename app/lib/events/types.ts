@@ -17,7 +17,8 @@ export type WebstudioEventType =
   | "invoice.paid"
   | "payment.created"
   | "expense.created"
-  | "campaign.created";
+  | "campaign.created"
+  | "development_event.created";
 
 export interface WebstudioEvent<T = Record<string, unknown>> {
   type: WebstudioEventType;
