@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/db";
+import { prisma, withTransaction } from "@/app/lib/db";
 import { publishEvent } from "@/app/lib/events/publisher";
 import { AppError } from "@/app/lib/api-response";
 import type { z } from "zod";
@@ -33,7 +33,7 @@ export const contractService = {
   },
 
   async create(input: ContractInput) {
-    const contract = await prisma.$transaction(async (tx) => {
+    const contract = await withTransaction(async (tx) => {
       const created = await tx.contract.create({ data: input });
       await publishEvent(
         "contract.created",
@@ -54,7 +54,7 @@ export const contractService = {
     const existing = await prisma.contract.findUnique({ where: { id } });
     if (!existing) throw new AppError("Contrato não encontrado.", 404);
 
-    return prisma.$transaction(async (tx) => {
+    return withTransaction(async (tx) => {
       const wasSigned = existing.status !== "SIGNED" && input.status === "SIGNED";
       const updated = await tx.contract.update({
         where: { id },

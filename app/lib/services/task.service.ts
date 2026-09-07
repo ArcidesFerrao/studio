@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/db";
+import { prisma, withTransaction } from "@/app/lib/db";
 import { publishEvent } from "@/app/lib/events/publisher";
 import { AppError } from "@/app/lib/api-response";
 import type { z } from "zod";
@@ -37,7 +37,7 @@ export const taskService = {
     const project = await prisma.project.findUnique({ where: { id: input.projectId } });
     if (!project) throw new AppError("Projeto não encontrado.", 404);
 
-    return prisma.$transaction(async (tx) => {
+    return withTransaction(async (tx) => {
       const task = await tx.task.create({ data: input });
 
       if (task.assigneeId) {
@@ -70,7 +70,7 @@ export const taskService = {
     const existing = await prisma.task.findUnique({ where: { id }, include: { project: true } });
     if (!existing) throw new AppError("Tarefa não encontrada.", 404);
 
-    return prisma.$transaction(async (tx) => {
+    return withTransaction(async (tx) => {
       const completing = existing.status !== "DONE" && input.status === "DONE";
       const updated = await tx.task.update({
         where: { id },

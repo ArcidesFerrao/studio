@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/db";
+import { prisma, withTransaction } from "@/app/lib/db";
 import { publishEvent } from "@/app/lib/events/publisher";
 import { AppError } from "@/app/lib/api-response";
 import type { z } from "zod";
@@ -49,7 +49,7 @@ export const invoiceService = {
     const { subtotal, tax, total } = calculateTotals(input.items, input.tax ?? 0);
     const number = await nextInvoiceNumber();
 
-    return prisma.$transaction(async (tx) => {
+    return withTransaction(async (tx) => {
       const invoice = await tx.invoice.create({
         data: {
           number,

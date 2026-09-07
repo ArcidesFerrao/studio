@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/db";
+import { prisma, withTransaction } from "@/app/lib/db";
 import { publishEvent } from "@/app/lib/events/publisher";
 import { AppError } from "@/app/lib/api-response";
 import { invoiceService } from "./invoice.service";
@@ -33,7 +33,7 @@ export const paymentService = {
       throw new AppError("Esta fatura já está totalmente paga.", 409);
     }
 
-    return prisma.$transaction(async (tx) => {
+    return withTransaction(async (tx) => {
       const payment = await tx.payment.create({
         data: {
           invoiceId: input.invoiceId,

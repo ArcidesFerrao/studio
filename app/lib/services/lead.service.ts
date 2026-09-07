@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/db";
+import { prisma, withTransaction } from "@/app/lib/db";
 import { publishEvent } from "@/app/lib/events/publisher";
 import { AppError } from "@/app/lib/api-response";
 import type { z } from "zod";
@@ -32,7 +32,7 @@ export const leadService = {
 
   /** Ponto de entrada público: formulário de contacto/orçamento do site institucional. */
   async createFromPublicForm(input: LeadInput) {
-    const lead = await prisma.$transaction(async (tx) => {
+    const lead = await withTransaction(async (tx) => {
       const created = await tx.lead.create({ data: { ...input } });
       await publishEvent(
         "lead.created",
@@ -61,7 +61,7 @@ export const leadService = {
     if (!lead) throw new AppError("Lead não encontrado.", 404);
     if (lead.clientId) throw new AppError("Este lead já foi convertido.", 409);
 
-    return prisma.$transaction(async (tx) => {
+    return withTransaction(async (tx) => {
       const client = await tx.client.upsert({
         where: { email: lead.email },
         update: {},

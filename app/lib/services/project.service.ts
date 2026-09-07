@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/db";
+import { prisma, withTransaction } from "@/app/lib/db";
 import { publishEvent } from "@/app/lib/events/publisher";
 import { AppError } from "@/app/lib/api-response";
 import type { z } from "zod";
@@ -44,7 +44,7 @@ export const projectService = {
   },
 
   async create(input: ProjectInput) {
-    return prisma.$transaction(async (tx) => {
+    return withTransaction(async (tx) => {
       const project = await tx.project.create({ data: input });
       await publishEvent(
         "project.created",
@@ -64,7 +64,7 @@ export const projectService = {
     const existing = await prisma.project.findUnique({ where: { id } });
     if (!existing) throw new AppError("Projeto não encontrado.", 404);
 
-    return prisma.$transaction(async (tx) => {
+    return withTransaction(async (tx) => {
       const completing = existing.status !== "COMPLETED" && input.status === "COMPLETED";
       const updated = await tx.project.update({
         where: { id },

@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/db";
+import { prisma, withTransaction } from "@/app/lib/db";
 import { publishEvent } from "@/app/lib/events/publisher";
 import { AppError } from "@/app/lib/api-response";
 import type { z } from "zod";
@@ -37,7 +37,7 @@ export const proposalService = {
 
   async create(input: ProposalInput, createdById: string) {
     const totalAmount = calculateTotal(input.items);
-    return prisma.$transaction(async (tx) => {
+    return withTransaction(async (tx) => {
       const proposal = await tx.proposal.create({
         data: {
           clientId: input.clientId,
@@ -72,7 +72,7 @@ export const proposalService = {
       throw new AppError("Só é possível enviar propostas em rascunho.", 409);
     }
 
-    return prisma.$transaction(async (tx) => {
+    return withTransaction(async (tx) => {
       const updated = await tx.proposal.update({
         where: { id },
         data: { status: "SENT", sentAt: new Date() },
@@ -104,7 +104,7 @@ export const proposalService = {
       throw new AppError("Só é possível responder a propostas enviadas.", 409);
     }
 
-    return prisma.$transaction(async (tx) => {
+    return withTransaction(async (tx) => {
       const updated = await tx.proposal.update({
         where: { id },
         data: {
