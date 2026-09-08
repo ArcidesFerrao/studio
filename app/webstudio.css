@@ -5,6 +5,7 @@
 @import "tailwindcss";
 .ws {
   /* palette */
+  --ws-main: #14111a;
   --ws-bg: #0e0c14;
   --ws-surface: #121019;
   --ws-card: #16141e;
