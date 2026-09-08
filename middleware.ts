@@ -4,9 +4,12 @@ import { getToken } from "next-auth/jwt";
 // Rotas que não exigem sessão de utilizador:
 // - /api/auth/*                 -> NextAuth (login)
 // - /api/integration/*          -> autentica por API key própria (verifyApiKey), não sessão
+// - /api/integrations/*         -> webhooks de fontes externas (GitHub, CI/CD), autenticam
+//                                  por assinatura HMAC própria (ex: X-Hub-Signature-256),
+//                                  não por sessão nem API key do nosso sistema
 // - POST /api/commercial/leads  -> formulário público de contacto/orçamento do site
 // - GET  /api/commercial/services -> catálogo de serviços exibido na landing page
-const PUBLIC_PREFIXES = ["/api/auth", "/api/integration"];
+const PUBLIC_PREFIXES = ["/api/auth", "/api/integration", "/api/integrations"];
 
 function isPublicRoute(pathname: string, method: string) {
   if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) return true;

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { prisma, withTransaction } from "@/app/lib/db";
 import { publishEvent } from "@/app/lib/events/publisher";
+import { inferFocus } from "@/app/lib/services/focus-inference.service";
 import type { Prisma } from "@prisma/client";
 import type { EventActor } from "@/app/lib/permissions";
 
@@ -146,6 +147,16 @@ export const developmentEventService = {
         });
       }
 
+      const { focusSession, interruption } = await inferFocus(tx, {
+        userId: actor.userId,
+        eventId: event.id,
+        eventType: input.eventType,
+        timestamp: event.timestamp,
+        projectId: input.projectId,
+        taskId: input.taskId,
+        metadata: input.metadata,
+      });
+
       await publishEvent(
         "development_event.created",
         {
@@ -164,7 +175,7 @@ export const developmentEventService = {
         tx
       );
 
-      return { event, log };
+      return { event, log, focusSession, interruption };
     });
   },
 
