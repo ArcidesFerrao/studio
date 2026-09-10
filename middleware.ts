@@ -14,6 +14,7 @@ const PUBLIC_PREFIXES = ["/api/auth", "/api/integration", "/api/integrations"];
 function isPublicRoute(pathname: string, method: string) {
   if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) return true;
   if (pathname === "/api/commercial/leads" && method === "POST") return true;
+  if (pathname === "/api/delivery/development/task-proposals" && method === "POST") return true;
   if (pathname === "/api/commercial/services" && method === "GET") return true;
   if (/^\/api\/commercial\/services\/[^/]+$/.test(pathname) && method === "GET") return true;
   return false;
