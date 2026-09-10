@@ -96,7 +96,7 @@ export const taskService = {
             entityType: "Task",
             entityId: id,
             description: `Tarefa "${updated.title}" concluída.`,
-            clientId: existing.project.clientId,
+            clientId: existing.project?.clientId ?? null,
           },
           tx
         );

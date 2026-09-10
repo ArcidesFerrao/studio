@@ -26,7 +26,7 @@ async function main() {
   console.log("[seed] main() iniciou");
 
   const email = process.env.SEED_ADMIN_EMAIL ?? "admin@evolurelabs.com";
-  const password = process.env.SEED_ADMIN_PASSWORD ?? "admin";
+  const password = process.env.SEED_ADMIN_PASSWORD ?? "admin2026";
   console.log(`[seed] email alvo: ${email}`);
 
   const existing = await prisma.user.findUnique({ where: { email } });
