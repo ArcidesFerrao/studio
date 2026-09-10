@@ -81,7 +81,7 @@ export const projectUpdateSchema = projectSchema.partial().extend({
 });
 
 export const taskSchema = z.object({
-  projectId: z.string(),
+  projectId: z.string().optional(), // opcional: tasks vindas de propostas do Labs (source=LABS_PROPOSAL) não têm projeto
   title: z.string().min(2),
   description: z.string().optional(),
   priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).optional(),
@@ -90,6 +90,16 @@ export const taskSchema = z.object({
 });
 export const taskUpdateSchema = taskSchema.partial().extend({
   status: z.enum(["TODO", "IN_PROGRESS", "REVIEW", "DONE"]).optional(),
+});
+
+// Payload que o Labs envia ao aceitar uma actions.task_proposals (W8/L4).
+// Não é o mesmo shape do taskSchema normal — vem sem projectId/assigneeId,
+// e sourceProposalId é o que garante idempotência (ver task-proposals/route.ts).
+export const taskProposalSchema = z.object({
+  title: z.string().min(2),
+  description: z.string().optional(),
+  priority: z.enum(["low", "medium", "high"]).optional(),
+  sourceProposalId: z.string().min(1),
 });
 
 export const invoiceSchema = z.object({

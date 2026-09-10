@@ -4,7 +4,10 @@ import { AppError } from "@/app/lib/api-response";
 import type { z } from "zod";
 import type { taskSchema, taskUpdateSchema } from "@/app/lib/validators";
 
-type TaskInput = z.infer<typeof taskSchema>;
+type TaskInput = z.infer<typeof taskSchema> & {
+  source?: "MANUAL" | "LABS_PROPOSAL";
+  sourceProposalId?: string;
+};
 type TaskUpdateInput = z.infer<typeof taskUpdateSchema>;
 
 export const taskService = {
@@ -34,8 +37,11 @@ export const taskService = {
   },
 
   async create(input: TaskInput) {
-    const project = await prisma.project.findUnique({ where: { id: input.projectId } });
-    if (!project) throw new AppError("Projeto não encontrado.", 404);
+    let project = null;
+    if (input.projectId) {
+      project = await prisma.project.findUnique({ where: { id: input.projectId } });
+      if (!project) throw new AppError("Projeto não encontrado.", 404);
+    }
 
     return withTransaction(async (tx) => {
       const task = await tx.task.create({ data: input });
@@ -47,7 +53,9 @@ export const taskService = {
             type: "INFO",
             title: "Nova tarefa atribuída",
             message: `Foste atribuído à tarefa "${task.title}".`,
-            link: `/projects/${task.projectId}/tasks/${task.id}`,
+            link: task.projectId
+              ? `/projects/${task.projectId}/tasks/${task.id}`
+              : `/tasks/${task.id}`,
           },
         });
       }
@@ -57,8 +65,10 @@ export const taskService = {
         {
           entityType: "Task",
           entityId: task.id,
-          description: `Tarefa "${task.title}" criada no projeto "${project.name}".`,
-          clientId: project.clientId,
+          description: project
+            ? `Tarefa "${task.title}" criada no projeto "${project.name}".`
+            : `Tarefa "${task.title}" criada (proposta do Labs).`,
+          clientId: project?.clientId ?? null,
         },
         tx
       );
