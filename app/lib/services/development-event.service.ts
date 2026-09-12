@@ -169,6 +169,8 @@ export const developmentEventService = {
             eventType: input.eventType,
             projectId: input.projectId,
             taskId: input.taskId,
+            message: input.metadata?.message,
+            modifiedFiles: input.metadata?.modifiedFiles,
           },
           skipActivity: !NOTEWORTHY_EVENT_TYPES.has(input.eventType),
         },
