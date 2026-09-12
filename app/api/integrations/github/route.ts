@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     console.error(
       "[github-webhook] GITHUB_WEBHOOK_SECRET ou GITHUB_WEBHOOK_USER_ID não configurados"
     );
-    return fail("Webhook não configurado no servidor.", 500);
+    return fail("Github Webhook não configurado no servidor.", 500);
   }
 
   const rawBody = await req.text();
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ processed: 0, ignored: githubEvent });
   } catch (err) {
     console.error("[github-webhook]", err);
-    return fail("Erro ao processar webhook.", 500);
+    return fail("Erro ao processar github webhook.", 500);
   }
 }
 
