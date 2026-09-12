@@ -106,7 +106,7 @@ export default function InvoicesPage() {
 
   async function handleSend(invoice: Invoice) {
     try {
-      await api.post(`/api/invoices/${invoice.id}/send`);
+      await api.post(`/api/commercial/invoices/${invoice.id}/send`);
       reload();
     } catch (err) {
       alert(

@@ -105,7 +105,7 @@ export default function ProposalsPage() {
   async function handleSend(proposal: Proposal) {
     if (!confirm(`Marcar "${proposal.title}" como enviada ao cliente?`)) return;
     try {
-      await api.post(`/api/proposals/${proposal.id}/send`);
+      await api.post(`/api/commercial/proposals/${proposal.id}/send`);
       reload();
     } catch (err) {
       alert(err instanceof ApiError ? err.message : "Não foi possível enviar.");
@@ -120,7 +120,7 @@ export default function ProposalsPage() {
     )
       return;
     try {
-      await api.post(`/api/proposals/${proposal.id}/respond`, { accepted });
+      await api.post(`/api/commercial/proposals/${proposal.id}/respond`, { accepted });
       reload();
     } catch (err) {
       alert(

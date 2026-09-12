@@ -67,7 +67,7 @@ export default function ProjectDetailPage({
 
   async function load() {
     try {
-      const data = await api.get<ProjectDetail>(`/api/projects/${id}`);
+      const data = await api.get<ProjectDetail>(`/api/delivery/projects/${id}`);
       setProject(data);
     } catch {
       router.push("/admin/projects");
@@ -81,7 +81,7 @@ export default function ProjectDetailPage({
 
   async function handleStatusChange(status: string) {
     try {
-      await api.patch(`/api/projects/${id}`, { status });
+      await api.patch(`/api/delivery/projects/${id}`, { status });
       load();
     } catch (err) {
       alert(
@@ -117,7 +117,7 @@ export default function ProjectDetailPage({
 
   async function handleTaskStatus(taskId: string, status: string) {
     try {
-      await api.patch(`/api/tasks/${taskId}`, { status });
+      await api.patch(`/api/delivery/tasks/${taskId}`, { status });
       load();
     } catch (err) {
       alert(
