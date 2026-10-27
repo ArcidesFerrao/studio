@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     locale: "pt_MZ",
     images: [
       {
-        url: "/og-image.png",
+        url: "/favicon.png",
         width: 1200,
         height: 630,
         alt: "Web Studio — Sites profissionais para negócios em Maputo, Moçambique",
