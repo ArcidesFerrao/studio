@@ -83,6 +83,9 @@ export const metadata: Metadata = {
   verification: {
     google: "GOOGLE_SEARCH_CONSOLE_TOKEN",
   },
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function WebStudioLayout({
