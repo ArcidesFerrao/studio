@@ -49,12 +49,12 @@ export const metadata: Metadata = {
     url: "https://webstudio.evolurelabs.com",
     title: "Web Studio — Sites Profissionais em Maputo",
     description:
-      "Landing pages e websites profissionais para negócios em Moçambique. Entrega em 5–7 dias a partir de 5.555 MZN.",
+      "Landing pages e websites profissionais para negócios em Moçambique. Entrega em 5–7 dias a partir de 8.999 MZN.",
     siteName: "Web Studio by Evolure Labs",
     locale: "pt_MZ",
     images: [
       {
-        url: "/favicon.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Web Studio — Sites profissionais para negócios em Maputo, Moçambique",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Web Studio — Sites Profissionais em Maputo",
     description:
-      "Landing pages e websites para negócios em Moçambique. A partir de 4.500 MZN.",
+      "Landing pages e websites para negócios em Moçambique. A partir de 8.999 MZN.",
     images: ["/og-image.png"],
   },
 
@@ -78,10 +78,6 @@ export const metadata: Metadata = {
       follow: true,
       "max-image-preview": "large",
     },
-  },
-
-  verification: {
-    google: "GOOGLE_SEARCH_CONSOLE_TOKEN",
   },
   icons: {
     icon: "/favicon.png",
